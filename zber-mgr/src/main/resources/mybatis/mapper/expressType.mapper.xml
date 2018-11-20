@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.ExpressType">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.ExpressType">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+  </resultMap>
+
+  <sql id="fields">
+    id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark,
+    name, introduce
+  </sql>
+
+  <sql id="values">
+    #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},#{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
+    #{remark,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{introduce,jdbcType=VARCHAR}
+  </sql>
+
+
+  <select id="selectById" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_express_type
+    <where>
+      delete_flag = 0 and id = #{id,jdbcType=CHAR}
+    </where>
+  </select>
+
+  <select id="selectByCondition" parameterType="com.zb.zber.data.model.ExpressType" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_express_type
+    <where>
+      delete_flag = 0
+    </where>
+    order by create_time desc
+  </select>
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.WebProduct">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.WebProduct">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="inface_id" jdbcType="CHAR" property="infaceId" />
+    <result column="big_p" jdbcType="VARCHAR" property="bigP" />
+    <result column="small_p" jdbcType="VARCHAR" property="smallP" />
+    <result column="p_name" jdbcType="VARCHAR" property="pName" />
+    <result column="p_intro" jdbcType="VARCHAR" property="pIntro" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark, 
+    inface_id, big_p, small_p, p_name, p_intro
+  </sql>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_web_product
+    where id = #{id,jdbcType=CHAR}
+  </select>
+
+  <select id="selectByExample" parameterType="com.zb.zber.data.model.WebProduct" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from tb_web_product
+    where 1=1
+    <if test="infaceId != null">
+      and inface_id = #{infaceId,jdbcType=CHAR}
+    </if>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from tb_web_product
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.zb.zber.data.model.WebProduct">
+    insert into tb_web_product (id, create_user_id, create_time, 
+      modify_user_id, modify_time, delete_flag, 
+      remark, inface_id, big_p, 
+      small_p, p_name, p_intro
+      )
+    values (#{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
+      #{remark,jdbcType=VARCHAR}, #{infaceId,jdbcType=CHAR}, #{bigP,jdbcType=VARCHAR}, 
+      #{smallP,jdbcType=VARCHAR}, #{pName,jdbcType=VARCHAR}, #{pIntro,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="String">
+    update tb_web_product
+    <set>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null">
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="infaceId != null">
+        inface_id = #{infaceId,jdbcType=CHAR},
+      </if>
+      <if test="bigP != null">
+        big_p = #{bigP,jdbcType=VARCHAR},
+      </if>
+      <if test="smallP != null">
+        small_p = #{smallP,jdbcType=VARCHAR},
+      </if>
+      <if test="pName != null">
+        p_name = #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test="pIntro != null">
+        p_intro = #{pIntro,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

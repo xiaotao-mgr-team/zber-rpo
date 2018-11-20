@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.Customer">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.Customer">
+    <result column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="destion" jdbcType="VARCHAR" property="destion" />
+    <result column="unit_price" jdbcType="INTEGER" property="unitPrice" />
+    <result column="sell_price" jdbcType="INTEGER" property="sellPrice" />
+    <result column="is_pay" jdbcType="BIT" property="isPay" />
+
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="is_use_module" jdbcType="BIT" property="isUseModule" />
+    <result column="expense" jdbcType="INTEGER" property="expense" />
+    <result column="is_get_ticket" jdbcType="BIT" property="isGetTicket" />
+    <result column="tick_type" jdbcType="CHAR" property="tickType" />
+    <result column="tick_money" jdbcType="DOUBLE" property="tickMoney" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="express_type" jdbcType="VARCHAR" property="expressType" />
+    <result column="owner" jdbcType="VARCHAR" property="owner" />
+  </resultMap>
+
+  <sql id="fields">
+    id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark,
+    address, tel, name, product, destion, unit_price, sell_price, is_pay, number, is_use_module,
+    expense, is_get_ticket, tick_type, tick_money,order_time,remarks,express_type,owner
+  </sql>
+
+  <sql id="values">
+    #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+    #{address,jdbcType=VARCHAR}, #{tel,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR}, #{destion,jdbcType=VARCHAR},
+    #{unitPrice,jdbcType=INTEGER}, #{sellPrice,jdbcType=INTEGER}, #{isPay,jdbcType=BIT}, #{number,jdbcType=INTEGER}, #{isUseModule,jdbcType=BIT},
+    #{expense,jdbcType=INTEGER}, #{isGetTicket,jdbcType=BIT}, #{tickType,jdbcType=CHAR}, #{tickMoney,jdbcType=DOUBLE},
+    #{orderDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, #{expressType,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}
+  </sql>
+
+  <insert id="insert" parameterType="com.zb.zber.data.model.Customer">
+    insert into tb_customer (<include refid="fields" />)
+    values (<include refid="values" />)
+  </insert>
+
+  <update id="deleteById" parameterType="java.lang.String">
+    update tb_customer
+    set delete_flag = 1
+    where id = #{id,jdbcType=CHAR}
+  </update>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_customer
+    where id = #{id,jdbcType=CHAR} and delete_flag = 0
+  </select>
+
+  <select id="listCustomer" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_customer
+    <where>
+      delete_flag = 0
+      <if test="startDate != null">
+        and order_time &gt;= #{startDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endDate != null">
+        and order_time &lt;= #{endDate,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <update id="updateById" parameterType="com.zb.zber.data.model.Customer">
+    update tb_customer
+    <set>
+      <if test="modifyUserId != null">
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        product = #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="destion != null">
+        destion = #{destion,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null">
+        unit_price = #{unitPrice,jdbcType=INTEGER},
+      </if>
+      <if test="sellPrice != null">
+        sell_price = #{sellPrice,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        number = #{number},
+      </if>
+      <if test="isUseModule != null">
+        is_use_module = #{isUseModule},
+      </if>
+      <if test="expense != null">
+        expense = #{expense},
+      </if>
+      <if test="isGetTicket != null">
+        is_get_ticket = #{isGetTicket},
+      </if>
+      <if test="tickType != null">
+        tick_type = #{tickType},
+      </if>
+      <if test="tickMoney != null">
+        tick_money = #{tickMoney},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks},
+      </if>
+      <if test="expressType != null">
+        express_type = #{expressType},
+      </if>
+      <if test="owner != null">
+        owner = #{owner,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR} and delete_flag = 0
+  </update>
+</mapper>

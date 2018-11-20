@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.StockRecord">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.StockRecord">
+    <result column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
+    <result column="left_number" jdbcType="INTEGER" property="leftNumber" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  </resultMap>
+
+  <sql id="fileds">
+    id, create_user_id, create_time,
+    modify_user_id, modify_time, delete_flag, remark, product_id, product_name,
+    type, number, left_number, user_name
+  </sql>
+
+  <sql id="values">
+    #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
+    #{remark,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+    #{type,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, #{leftNumber,jdbcType=INTEGER},
+    #{userName,jdbcType=VARCHAR}
+  </sql>
+
+  <insert id="insert" parameterType="com.zb.zber.data.model.StockRecord">
+    insert into tb_stock_record (<include refid="fileds"/> )
+    values (<include refid="values" />)
+  </insert>
+
+  <select id="selectList" parameterType="com.zb.zber.data.model.StockRecord" resultMap="BaseResultMap">
+    select *
+    from tb_stock_record
+    <where>
+      delete_flag = 0
+      <if test="productId != null">
+        and product_id = #{productId,jdbcType=VARCHAR}
+      </if>
+      <if test="type != null">
+        and type = #{type,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+</mapper>

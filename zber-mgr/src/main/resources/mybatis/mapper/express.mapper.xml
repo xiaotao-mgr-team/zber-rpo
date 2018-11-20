@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.Express">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.Express">
+    <result column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="destion" jdbcType="VARCHAR" property="destion" />
+    <result column="destion_name" jdbcType="VARCHAR" property="destionName" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+  </resultMap>
+
+  <sql id="fields">
+    `id`, `create_user_id`, `create_time`, `modify_user_id`,`modify_time`,`remark`, `delete_flag`,
+    `product_id`,`product_name`,`destion`,`destion_name`,`company`,`price`
+  </sql>
+
+  <sql id="values">
+    #{id}, #{createUserId}, #{createTime}, #{modifyUserId}, #{modifyTime}, #{remark}, #{delf},
+    #{productId},#{productName},#{destion}, #{destionName}, #{company}, #{price}
+  </sql>
+
+  <insert id="insert" parameterType="com.zb.zber.data.model.Express">
+    insert into tb_express (<include refid="fields" />)
+    values (<include refid="values"/>)
+  </insert>
+
+  <update id="deleteById" parameterType="map">
+    update tb_express
+    set delete_flag = 1
+    where id = #{id,jdbcType=CHAR}  and delete_flag = 0
+  </update>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_express
+    where id = #{id,jdbcType=CHAR}  and delete_flag = 0
+  </select>
+
+  <select id="listExpress" parameterType="com.zb.zber.data.model.Express" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_express
+    <where>
+      delete_flag = 0
+      <if test="company != null and company != ''">
+        and company=#{company,jdbcType=CHAR}
+      </if>
+      <if test="destion != null">
+        and destion=#{destion,jdbcType=VARCHAR}
+      </if>
+      <if test="productId != null and productId!=''">
+        and product_id = #{productId,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <update id="updateById" parameterType="com.zb.zber.data.model.Express">
+    update tb_express
+    <set>
+      <if test="modifyUserId != null and modifyUserId != ''">
+        modify_user_id=#{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null and modifyTime != ''">
+        modify_time=#{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productId != null and productId != ''">
+        product_id=#{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="destion != null">
+        destion=#{destion,jdbcType=VARCHAR},
+      </if>
+      <if test="destionName != null">
+        destion_name=#{destionName,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        company=#{company,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price=#{price,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id=#{id,jdbcType=CHAR} and delete_flag = 0
+  </update>
+
+</mapper>

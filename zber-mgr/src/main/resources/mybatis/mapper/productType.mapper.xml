@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.ProductType">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.ProductType">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <collection property="productList" ofType="com.zb.zber.data.model.Product" select="getProduct" column="id"></collection>
+  </resultMap>
+
+  <sql id="fields">
+    id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark,
+    name, introduce
+  </sql>
+
+  <sql id="values">
+    #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},#{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
+    #{remark,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{introduce,jdbcType=VARCHAR}
+  </sql>
+
+  <select id="getProduct" parameterType="java.lang.String" resultType="com.zb.zber.data.model.Product">
+    select id, title ,type_id as typeId,introduce as introduce from tb_product s where s.type_id = #{id}
+  </select>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap ="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_product_type
+    where id = #{id,jdbcType=CHAR} and delete_flag = 0
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    update tb_product_type set delete_flag = 1
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+
+  <insert id="add" parameterType="com.zb.zber.data.model.ProductType">
+    insert into tb_product_type (
+    <include refid="fields" />
+    )
+    values (<include refid="values" />)
+  </insert>
+
+  <update id="updateById" parameterType="com.zb.zber.data.model.ProductType">
+    update tb_product_type
+    <set>
+      <if test="modifyUserId != null">
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+
+  <select id="selectByCondition" parameterType="com.zb.zber.data.model.ProductType" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_product_type
+    <where>
+      delete_flag = 0
+    </where>
+    order by id asc
+  </select>
+</mapper>

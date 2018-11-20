@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.Pay">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.Pay">
+    <result column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+    <result column="total" jdbcType="INTEGER" property="total" />
+    <result column="total_price" jdbcType="INTEGER" property="totalPrice" />
+    <result column="total_fare" jdbcType="DOUBLE" property="totalFare" />
+    <result column="total_tax" jdbcType="DOUBLE" property="totalTax" />
+    <result column="check_date" jdbcType="TIMESTAMP" property="checkDate" />
+    <result column="is_destion" jdbcType="BIT" property="isDestion" />
+  </resultMap>
+
+  <sql id="fields">
+    id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark, total, total_price,
+    total_fare, total_tax, check_date,is_destion
+  </sql>
+
+  <sql id="values">
+    #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
+    #{remark,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER}, #{totalPrice,jdbcType=INTEGER}, #{totalFare,jdbcType=DOUBLE}, #{totalTax,jdbcType=DOUBLE},
+    #{checkDate,jdbcType=TIMESTAMP},#{isDestion,jdbcType=BIT}
+  </sql>
+
+  <!-- æå¥æ°æ°æ® -->
+  <insert id="insert" parameterType="com.zb.zber.data.model.Pay">
+    insert into tb_pay (<include refid="fields" />)
+    values (<include refid="values" />)
+  </insert>
+
+  <!-- æ´æ°æ°æ°æ® -->
+  <update id="updateById" parameterType="map">
+    update tb_pay
+    <set>
+      delete_flag = 1
+    </set>
+    where check_date = #{checkDate} and delete_flag = 0
+  </update>
+
+  <!-- ç®è´¦è®°å½ -->
+  <select id="listPay" parameterType="com.zb.zber.data.model.Pay" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_pay
+    <where>
+      delete_flag = 0
+      <if test="isDestion != null">
+        and is_destion = #{isDestion,jdbcType=BIT}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <select id="queryPay" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_pay
+    <where>
+      delete_flag = 0
+      <if test="isDestion != null">
+        and is_destion = #{isDestion,jdbcType=BIT}
+      </if>
+      <if test="createTime != null">
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+</mapper>

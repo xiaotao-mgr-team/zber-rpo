@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.WebProductInface">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.WebProductInface">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="main_id" jdbcType="CHAR" property="mainId" />
+    <result column="i_name" jdbcType="VARCHAR" property="iName" />
+    <result column="i_introduce" jdbcType="VARCHAR" property="iIntroduce" />
+    <result column="big_p" jdbcType="VARCHAR" property="bigP" />
+    <result column="small_p" jdbcType="VARCHAR" property="smallP" />
+    <result column="p_name" jdbcType="VARCHAR" property="pName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark, 
+    main_id, i_name, i_introduce, big_p, small_p ,p_name
+  </sql>
+
+  <sql id="fileds">
+    `id`, `create_user_id`, `create_time`, `modify_user_id`,`modify_time`,`remark`, `delete_flag`,
+    `main_id`, `i_name`, `i_introduce`, `big_p`, `small_p`, `p_name`
+  </sql>
+
+  <sql id="values">
+    #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+    #{remark}, #{delf}, #{mainId,jdbcType=CHAR}, #{iName,jdbcType=VARCHAR}, #{iIntroduce,jdbcType=VARCHAR},
+    #{bigP,jdbcType=VARCHAR}, #{smallP,jdbcType=VARCHAR}, #{pName,jdbcType=VARCHAR}
+  </sql>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_web_product_inface
+    where id = #{id,jdbcType=CHAR}
+  </select>
+
+  <select id="selectByExample" parameterType="com.zb.zber.data.model.WebProductInface" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_web_product_inface
+    where 1=1
+    <if test="mainId != null">
+      and main_id = #{mainId,jdbcType=CHAR}
+    </if>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from tb_web_product_inface
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.zb.zber.data.model.WebProductInface">
+    insert into tb_web_product_inface (<include refid="fileds" />)
+    values (<include refid="values" />)
+  </insert>
+
+  <update id="updateById" parameterType="com.zb.zber.data.model.WebProductInface">
+    update tb_web_product_inface
+    <set>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null">
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="mainId != null">
+        main_id = #{mainId,jdbcType=CHAR},
+      </if>
+      <if test="iName != null">
+        i_name = #{iName,jdbcType=VARCHAR},
+      </if>
+      <if test="iIntroduce != null">
+        i_introduce = #{iIntroduce,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zb.zber.data.model.Product">
+  <resultMap id="BaseResultMap" type="com.zb.zber.data.model.Product">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="CHAR" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="delf" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="type_id" jdbcType="CHAR" property="typeId" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+
+    <result column="small_p" jdbcType="VARCHAR" property="smallP" />
+    <result column="big_p" jdbcType="VARCHAR" property="bigP" />
+  </resultMap>
+
+  <sql id="fields">
+    id, create_user_id, create_time,modify_user_id, modify_time, delete_flag, remark,
+    title, type_id, price, introduce, img,small_p,big_p
+  </sql>
+
+  <sql id="values">
+    #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
+    #{remark,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{typeId,jdbcType=CHAR},
+    #{price,jdbcType=INTEGER}, #{introduce,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{smallP,jdbcType=VARCHAR}, #{bigP,jdbcType=VARCHAR}
+  </sql>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_product
+    where id = #{id,jdbcType=CHAR} and delete_flag = 0
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    update tb_product
+    set delete_flag = 1
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+
+  <insert id="add" parameterType="com.zb.zber.data.model.Product">
+    insert into tb_product (<include refid="fields" />)
+    values (<include refid="values" />)
+  </insert>
+
+  <select id="listProduct" parameterType="com.zb.zber.data.model.Product" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_product
+    <where>
+      delete_flag = 0
+      <if test="typeId != null">
+        and type_id = #{typeId,jdbcType=CHAR}
+      </if>
+      <if test="title != null">
+        and title like CONCAT('%',#{title},'%')
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <update id="updateById" parameterType="com.zb.zber.data.model.Product">
+    update tb_product
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null">
+        img = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="smallP != null">
+        small_p = #{smallP,jdbcType=VARCHAR},
+      </if>
+      <if test="bigP != null">
+        big_p = #{bigP,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR} and delete_flag = 0
+  </update>
+
+</mapper>

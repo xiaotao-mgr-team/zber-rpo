@@ -1,12 +1,13 @@
 package com.zb.zber.common.core.context.spring.quartz;
 
+import com.whalin.MemCached.MemCachedClient;
 import com.zb.zber.common.core.context.app.cfg.initor.RootConfigInitor;
-import com.zb.zber.common.core.context.spring.memcache.cleint.MemCachedOperation;
 import com.zb.zber.common.utils.UUIDUtilies;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 定时任务job切面类
@@ -19,6 +20,9 @@ public class QuartzJobAspect implements  InitializingBean
     private static final Logger logger = LoggerFactory.getLogger(QuartzJobAspect.class);
     
     public static final String QUARTZ_LOCK = "quartz_lock_";
+
+	@Autowired
+	private MemCachedClient memCachedClient;
     
     /**
      * 集群时的项目标识，集群下的相同项目每个标识应该不同，否则无法实现互备
@@ -70,9 +74,9 @@ public class QuartzJobAspect implements  InitializingBean
 		    	logger.info("当前quartz jobDetail：{}_{}  已经开启集群高可用",className,methodName);
 		      }
     	 
-    	  boolean addedSucc =  MemCachedOperation.setStringIfNotExists(currentKey,60*3, getClusterIdentity());
+    	  boolean addedSucc =  memCachedClient.storeCounter(currentKey,60*3L);
     	  if(!addedSucc){
-    		  String clusterIdentity = (String)MemCachedOperation.get(currentKey);
+    		  String clusterIdentity = (String)memCachedClient.get(currentKey);
     		  if(!getClusterIdentity().equals(clusterIdentity)){
     			  canExcute = false;
     			  logger.warn("当前quartz jobDetail："+className+"_"+methodName+" 无需执行,集群中的其他相同任务正在执行！");

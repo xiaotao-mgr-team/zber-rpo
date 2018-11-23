@@ -36,8 +36,8 @@ public class Customer extends EntityObject {
 
     public void format()
     {
-//        setProductName((String)MemCachedOperation.get("PRODUCT_UNIT_NAME_" + this.product));
-//        setExpressName((String)MemCachedOperation.get("EXPRESS_" + this.expressType));
+//        setProductName((String)memCachedClient.get("PRODUCT_UNIT_NAME_" + this.product));
+//        setExpressName((String)memCachedClient.get("EXPRESS_" + this.expressType));
 //        if (getIsGetTicket().booleanValue()) {
 //            setIsGetTicketStr("未开具");
 //        } else {

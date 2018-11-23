@@ -4,11 +4,11 @@ import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
 import com.zb.zber.data.dao.IHeOrderDao;
 import com.zb.zber.data.dao.IStockDao;
 import com.zb.zber.data.model.HeOrder;
-import com.zb.zber.data.model.Stock;
 import com.zb.zber.data.service.IHeOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,12 +24,6 @@ public class HeOrderService implements IHeOrderService {
 
     public int insert(HeOrder record)
     {
-        Stock stock = stockMapper.selectByProductId(record.getProduct());
-        if (stock.getLeftNumber() - record.getNumber().intValue() >= 0)
-        {
-            stock.setLeftNumber(stock.getLeftNumber() - record.getNumber().intValue());
-            stockMapper.updateByProductId(stock);
-        }
         return heOrderMapper.insert(record);
     }
 
@@ -56,5 +50,10 @@ public class HeOrderService implements IHeOrderService {
     public PaginationOrdersList<HeOrder> selectList(PaginationOrdersList<HeOrder> page, HeOrder record)
     {
         return heOrderMapper.selectList(page, record);
+    }
+
+    @Override
+    public PaginationOrdersList<HeOrder> listHeOrder(PaginationOrdersList<HeOrder> page, Date startTime, Date endTime) {
+        return heOrderMapper.listHeOrder(page,startTime,endTime);
     }
 }

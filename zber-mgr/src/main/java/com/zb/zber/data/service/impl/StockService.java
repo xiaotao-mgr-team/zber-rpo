@@ -1,6 +1,6 @@
 package com.zb.zber.data.service.impl;
 
-import com.zb.zber.common.core.context.spring.memcache.cleint.MemCachedOperation;
+import com.whalin.MemCached.MemCachedClient;
 import com.zb.zber.common.core.exception.BusinessException;
 import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
 import com.zb.zber.data.dao.IProductDao;
@@ -31,13 +31,16 @@ public class StockService implements IStockService {
     @Autowired
     private IStockRecordDao stockRecordMapper;
 
+    @Autowired
+    private MemCachedClient memCachedClient;
+
     public int insert(Stock record) throws BusinessException {
         Stock oldRecord = stockMapper.selectByProductId(record.getProductId());
         if (oldRecord != null) {
             throw new BusinessException("common.dir.not.exist.err");
         }
         if ((record != null) && (!StringUtils.isEmpty(record.getProductId())) && (StringUtils.isEmpty(record.getProductName()))) {
-            Object productName = MemCachedOperation.get("PRODUCT_UNIT_NAME_" + record.getProductId());
+            Object productName = memCachedClient.get("PRODUCT_UNIT_NAME_" + record.getProductId());
             if (productName == null) {
                 Product product = productMapper.selectById(record.getProductId());
                 if (product != null) {

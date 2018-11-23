@@ -2,6 +2,8 @@ package com.zb.zber.data.model;
 
 import com.zb.zber.common.core.persistence.entity.EntityObject;
 
+import java.math.BigDecimal;
+
 /**
  * Created by cuixt on 2018/8/2.
  */
@@ -12,12 +14,14 @@ public class HeOrder extends EntityObject {
     private Integer unitPrice;
     private String isPay;
     private Integer number;
-    private String isGetTicket;
+    private Boolean isGetTicket;
     private String tickType;
     private Integer tickMoney;
     private String expressType;
-    private Integer expressExpense;
+    private BigDecimal expressExpense;
     private String remarks;
+    private BigDecimal allMoney;
+    private BigDecimal sellPrice;
 
     public String getAddress()
     {
@@ -89,16 +93,6 @@ public class HeOrder extends EntityObject {
         this.expressType = expressType;
     }
 
-    public Integer getExpressExpense()
-    {
-        return this.expressExpense;
-    }
-
-    public void setExpressExpense(Integer expressExpense)
-    {
-        this.expressExpense = expressExpense;
-    }
-
     public String getRemarks()
     {
         return this.remarks;
@@ -119,13 +113,35 @@ public class HeOrder extends EntityObject {
         this.isPay = isPay;
     }
 
-    public String getIsGetTicket()
-    {
-        return this.isGetTicket;
+    public BigDecimal getAllMoney() {
+        return allMoney;
     }
 
-    public void setIsGetTicket(String isGetTicket)
-    {
-        this.isGetTicket = isGetTicket;
+    public void setAllMoney(BigDecimal allMoney) {
+        this.allMoney = allMoney;
+    }
+
+    public BigDecimal getExpressExpense() {
+        return expressExpense;
+    }
+
+    public void setExpressExpense(BigDecimal expressExpense) {
+        this.expressExpense = expressExpense;
+    }
+
+    public BigDecimal getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(BigDecimal sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
+    public Boolean getGetTicket() {
+        return isGetTicket;
+    }
+
+    public void setGetTicket(Boolean getTicket) {
+        isGetTicket = getTicket;
     }
 }

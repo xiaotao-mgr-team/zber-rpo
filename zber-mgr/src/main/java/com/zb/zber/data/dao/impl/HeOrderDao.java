@@ -1,12 +1,15 @@
 package com.zb.zber.data.dao.impl;
 
+import com.google.common.collect.Maps;
 import com.zb.zber.common.core.persistence.db.dao.mybatis.SuperDao;
 import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
 import com.zb.zber.data.dao.IHeOrderDao;
 import com.zb.zber.data.model.HeOrder;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cuixt on 2018/10/10.
@@ -43,5 +46,13 @@ public class HeOrderDao extends SuperDao implements IHeOrderDao {
     @Override
     public PaginationOrdersList<HeOrder> selectList(PaginationOrdersList<HeOrder> page, HeOrder record) {
         return super.selectPage("com.zb.zber.data.model.HeOrder.selectByHeOrder", record, page);
+    }
+
+    @Override
+    public PaginationOrdersList<HeOrder> listHeOrder(PaginationOrdersList<HeOrder> page, Date startDate, Date endDate) {
+        Map<String, Object> maps = Maps.newHashMap();
+        maps.put("startDate", startDate);
+        maps.put("endDate", endDate);
+        return super.selectPage("com.zb.zber.data.model.Customer.listHeOrder", maps, page);
     }
 }

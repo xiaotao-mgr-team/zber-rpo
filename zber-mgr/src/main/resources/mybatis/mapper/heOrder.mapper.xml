@@ -19,8 +19,10 @@
     <result column="tick_type" jdbcType="CHAR" property="tickType" />
     <result column="tick_money" jdbcType="INTEGER" property="tickMoney" />
     <result column="express_type" jdbcType="VARCHAR" property="expressType" />
-    <result column="express_expense" jdbcType="INTEGER" property="expressExpense" />
+    <result column="express_expense" jdbcType="DECIMAL" property="expressExpense" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="all_money" jdbcType="DECIMAL" property="allMoney" />
+    <result column="sell_price" jdbcType="DECIMAL" property="sellPrice" />
   </resultMap>
 
   <sql id="fields">
@@ -29,7 +31,7 @@
     remark, address, product,
     unit_price, is_pay, number,
     is_get_ticket, tick_type, tick_money,
-    express_type, express_expense, remarks
+    express_type, express_expense, remarks,all_money,sell_price
   </sql>
 
   <sql id="values">
@@ -38,7 +40,8 @@
     #{remark,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR},
     #{unitPrice,jdbcType=INTEGER}, #{isPay,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER},
     #{isGetTicket,jdbcType=VARCHAR}, #{tickType,jdbcType=CHAR}, #{tickMoney,jdbcType=INTEGER},
-    #{expressType,jdbcType=VARCHAR}, #{expressExpense,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}
+    #{expressType,jdbcType=VARCHAR}, #{expressExpense,jdbcType=DECIMAL}, #{remarks,jdbcType=VARCHAR},
+    #{allMoney,jdbcType=DECIMAL}, #{sellPrice,jdbcType=DECIMAL}
   </sql>
 
   <insert id="insert" parameterType="com.zb.zber.data.model.HeOrder">
@@ -71,31 +74,37 @@
         product=#{product,jdbcType=VARCHAR},
       </if>
       <if test="unitPrice != null">
-        unitPrice=#{unitPrice,jdbcType=INTEGER},
+        unit_price=#{unitPrice,jdbcType=INTEGER},
       </if>
       <if test="isPay != null">
-        isPay=#{isPay,jdbcType=VARCHAR},
+        is_pay=#{isPay,jdbcType=VARCHAR},
       </if>
       <if test="number != null">
         number=#{number,jdbcType=INTEGER},
       </if>
       <if test="isGetTicket != null">
-        isGetTicket=#{isGetTicket,jdbcType=VARCHAR},
+        is_get_ticket=#{isGetTicket,jdbcType=VARCHAR},
       </if>
       <if test="tickType != null">
-        tickType=#{tickType,jdbcType=CHAR},
+        tick_type=#{tickType,jdbcType=CHAR},
       </if>
       <if test="tickMoney != null">
-        tickMoney=#{tickMoney,jdbcType=INTEGER},
+        tick_money=#{tickMoney,jdbcType=INTEGER},
       </if>
       <if test="expressType != null">
-        expressType=#{expressType,jdbcType=VARCHAR},
+        express_type=#{expressType,jdbcType=VARCHAR},
       </if>
       <if test="expressExpense != null">
-        expressExpense=#{expressExpense,jdbcType=INTEGER},
+        express_expense=#{expressExpense,jdbcType=DECIMAL},
       </if>
       <if test="remarks != null">
         remarks=#{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="allMoney != null">
+        all_money=#{allMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="sellPrice != null">
+        sell_price=#{sellPrice,jdbcType=DECIMAL},
       </if>
     </set>
     where id=#{id,jdbcType=CHAR} and delete_flag = 0
@@ -111,16 +120,13 @@
         and product=#{product,jdbcType=VARCHAR}
       </if>
       <if test="isPay != null">
-        and isPay=#{isPay,jdbcType=VARCHAR}
+        and is_pay=#{isPay,jdbcType=VARCHAR}
       </if>
       <if test="isGetTicket != null">
-        and isGetTicket=#{isGetTicket,jdbcType=VARCHAR}
+        and is_get_ticket=#{isGetTicket,jdbcType=VARCHAR}
       </if>
       <if test="tickType != null">
-        and tickType=#{tickType,jdbcType=CHAR}
-      </if>
-      <if test="expressType != null">
-        and expressType=#{expressType,jdbcType=VARCHAR}
+        and tick_type=#{tickType,jdbcType=CHAR}
       </if>
     </where>
     order by create_time desc
@@ -131,6 +137,22 @@
     <include refid="fields" />
     from tb_he_order
     where id = #{id,jdbcType=CHAR}  and delete_flag = 0
+  </select>
+
+  <select id="listCustomer" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_he_order
+    <where>
+      delete_flag = 0
+      <if test="startDate != null">
+        and order_time &gt;= #{startDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endDate != null">
+        and order_time &lt;= #{endDate,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+    order by create_time desc
   </select>
 
 </mapper>

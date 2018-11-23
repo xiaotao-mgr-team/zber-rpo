@@ -12,17 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by cuixt on 2018/8/2.
  */
 
-@RequestMapping({"/he-order"})
+@RequestMapping({"/bgr/customer"})
 @Controller
 public class HeOrderControllerApi {
 
@@ -32,18 +32,18 @@ public class HeOrderControllerApi {
 
     @RequestMapping(value = {"/add"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage addHeOrder(@RequestBody HeOrder heOrder, HttpServletRequest request) {
+    public ResponseMessage addHeOrder( HeOrder heOrder, HttpServletRequest request, HttpServletResponse response) {
         try {
-            ParamCheckUtils.notAllNull(new Object[]{heOrder.getAddress(), heOrder.getExpressType(),
-                            heOrder.getIsGetTicket(), heOrder.getIsPay(), heOrder.getNumber(), heOrder.getProduct()},
-                    new String[]{"Address", "ExpressType", "IsGetTicket", "IsPay", "Number", "Product"});
-            if ("0".equals(heOrder.getIsGetTicket())) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            ParamCheckUtils.notAllNull(new Object[]{heOrder.getAddress(), heOrder.getIsPay(), heOrder.getNumber(), heOrder.getProduct()},
+                    new String[]{"Address", "IsPay", "Number", "Product"});
+            if (!heOrder.getGetTicket()) {
                 ParamCheckUtils.notAllNull(new Object[]{heOrder.getTickType(), heOrder.getTickMoney()},
                         new String[]{"TickType", "TickMoney"});
             }
-            this.heOrderService.insert(heOrder);
-
+            heOrderService.insert(heOrder);
             return ResponseMessage.success();
+
         } catch (BusinessException e) {
             logger.warn("api.order.add. error!", e);
             return ResponseMessage.error((String) e.getValue(), MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
@@ -52,8 +52,9 @@ public class HeOrderControllerApi {
 
     @RequestMapping(value = {"/delete"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage delete(@ModelAttribute String id, HttpServletRequest request) {
+    public ResponseMessage delete(@ModelAttribute String id, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
             this.heOrderService.deleteById(id);
             return ResponseMessage.success();
@@ -65,8 +66,9 @@ public class HeOrderControllerApi {
 
     @RequestMapping(value = {"/update"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage updateExpress(@RequestBody HeOrder heOrder, HttpServletRequest request) {
+    public ResponseMessage updateExpress( HeOrder heOrder, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{heOrder.getId()}, new String[]{"Id"});
 
             this.heOrderService.update(heOrder);
@@ -80,15 +82,17 @@ public class HeOrderControllerApi {
 
     @RequestMapping(value = {"/list"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listHeOrder(PaginationOrdersList<HeOrder> page, HeOrder heOrder, HttpServletRequest request) {
+    public ResponseMessage listHeOrder(PaginationOrdersList<HeOrder> page, HeOrder heOrder, HttpServletRequest request, HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         page = this.heOrderService.selectList(page, heOrder);
         return ResponseMessage.success(page);
     }
 
     @RequestMapping(value = {"/detail"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage getDetail(@ModelAttribute String id, HttpServletRequest request) {
+    public ResponseMessage getDetail(@ModelAttribute String id, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
             HeOrder heOrder = this.heOrderService.selectById(id);
 

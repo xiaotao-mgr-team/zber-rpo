@@ -3,6 +3,7 @@ package com.zb.zber.data.dao;
 import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
 import com.zb.zber.data.model.HeOrder;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,5 +24,5 @@ public interface IHeOrderDao {
 
     PaginationOrdersList<HeOrder> selectList(PaginationOrdersList<HeOrder> paramPaginationOrdersList, HeOrder paramHeOrder);
 
-
+    PaginationOrdersList<HeOrder> listHeOrder(PaginationOrdersList<HeOrder> paramPaginationOrdersList, Date startTime, Date endTime);
 }

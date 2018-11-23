@@ -65,8 +65,6 @@ public class UrlHandler {
             StringBuffer sb = new StringBuffer();
             sb.append(normalPath).append("/").append(imageUrl);
             FileCopyUtils.copy(new File(tempPath + "/" + imageUrl), new File(sb.toString()));
-            logger.info("cuixiaotao====tempPath="+tempPath);
-            logger.info("cuixiaotao====normalPath="+normalPath);
         }
         catch (IOException e)
         {

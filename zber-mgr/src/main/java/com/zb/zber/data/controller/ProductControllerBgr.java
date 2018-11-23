@@ -1,7 +1,7 @@
 package com.zb.zber.data.controller;
 
 import com.google.common.collect.Lists;
-import com.zb.zber.common.core.context.spring.memcache.cleint.MemCachedOperation;
+import com.whalin.MemCached.MemCachedClient;
 import com.zb.zber.common.core.exception.BusinessException;
 import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
 import com.zb.zber.common.utils.ParamCheckUtils;
@@ -34,6 +34,9 @@ public class ProductControllerBgr {
     @Autowired
     private IProductService productService;
 
+    @Autowired
+    private MemCachedClient memCachedClient;
+
     @RequestMapping(value={"/type/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseMessage listProductType(ProductType productType, PaginationOrdersList<ProductType> page, HttpServletRequest request, HttpServletResponse response)
@@ -62,8 +65,8 @@ public class ProductControllerBgr {
                     new String[] { "TypeId", "Introduce", "Price", "Title" });
             response.addHeader("Access-Control-Allow-Origin", "*");
             Product pt = this.productService.addProduct(product);
-            MemCachedOperation.set("PRODUCT_UNIT_NAME_" + pt.getId(), pt.getTitle(), 86400);
-            MemCachedOperation.set("PRODUCT_UNIT_PRICE_" + pt.getId(), pt.getPrice(), 86400);
+            memCachedClient.set("PRODUCT_UNIT_NAME_" + pt.getId(), pt.getTitle());
+            memCachedClient.set("PRODUCT_UNIT_PRICE_" + pt.getId(), pt.getPrice());
             if (StringUtils.isNotEmpty(product.getImg()))
             {
                 String[] imgs = product.getImg().split(",");
@@ -92,11 +95,11 @@ public class ProductControllerBgr {
                     new String[] { "Id", "TypeId", "Introduce", "Price", "Title" });
 
             this.productService.updateById(product);
-            MemCachedOperation.set(product.getId(), product.getTitle(), 86400);
-            MemCachedOperation.set("PRODUCT_UNIT_PRICE_" + product.getId(), product.getPrice(), 86400);
-            if (StringUtils.isNotEmpty(product.getImg())) {
-                UrlHandler.copyFile(product.getImg(), FileDomainEnum.ZBER_PRODUCT.getCode(), CommonConstant.UploadFileType.IMAGE.getCode());
-            }
+            memCachedClient.set(product.getId(), product.getTitle());
+            memCachedClient.set("PRODUCT_UNIT_PRICE_" + product.getId(), product.getPrice());
+//            if (StringUtils.isNotEmpty(product.getImg())) {
+//                UrlHandler.copyFile(product.getImg(), FileDomainEnum.ZBER_PRODUCT.getCode(), CommonConstant.UploadFileType.IMAGE.getCode());
+//            }
             return ResponseMessage.success();
         }
         catch (BusinessException e)
@@ -112,12 +115,13 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             page = this.productService.listProduct(page, product);
-//            if ((page != null) && (page.getDatas() != null) && (page.getDatas().size() > 0) && (StringUtils.isEmpty((String)MemCachedOperation.get(((Product)page.getDatas().get(0)).getId())))) {
-//                for (Product pt : page.getDatas()) {
-//                    MemCachedOperation.set(pt.getId(), pt.getTitle(), 86400);
-//                }
-//            }
+            if ((page != null) && (page.getDatas() != null) && (page.getDatas().size() > 0)) {
+                for (Product pt : page.getDatas()) {
+                    memCachedClient.set(pt.getId(), pt.getTitle());
+                }
+            }
             return ResponseMessage.success(page);
         }
         catch (BusinessException e)
@@ -147,6 +151,7 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
             Product product = this.productService.selectById(id);
 

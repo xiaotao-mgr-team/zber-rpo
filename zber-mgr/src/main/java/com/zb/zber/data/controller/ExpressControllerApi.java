@@ -1,6 +1,6 @@
 package com.zb.zber.data.controller;
 
-import com.zb.zber.common.core.context.spring.memcache.cleint.MemCachedOperation;
+import com.whalin.MemCached.MemCachedClient;
 import com.zb.zber.common.core.exception.BusinessException;
 import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
 import com.zb.zber.common.utils.ParamCheckUtils;
@@ -34,6 +34,9 @@ public class ExpressControllerApi {
     @Autowired
     private ExpressTypeService sTypeService;
 
+    @Autowired
+    private MemCachedClient memCachedClient;
+
     @RequestMapping(value={"/type/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseMessage listExpressType(ExpressType expressType, PaginationOrdersList<ExpressType> page, HttpServletRequest request)
@@ -52,11 +55,11 @@ public class ExpressControllerApi {
             ParamCheckUtils.notAllNull(new Object[] { express.getProductId(), express.getDestion(), express.getCompany(), express.getPrice() },
                     new String[] { "ProductId", "Destion", "Company", "Price" });
 
-            express.setProductName((String) MemCachedOperation.get("PRODUCT_UNIT_NAME_" + express.getProductId()));
-            express.setDestionName((String)MemCachedOperation.get("AREA_PROVINCE_" + express.getDestion()));
+            express.setProductName((String) memCachedClient.get("PRODUCT_UNIT_NAME_" + express.getProductId()));
+            express.setDestionName((String)memCachedClient.get("AREA_PROVINCE_" + express.getDestion()));
             this.expressService.addExpress(express);
 
-            MemCachedOperation.set(express.getProductId() + "_" + express.getDestion() + "_" + express.getCompany(), express.getPrice(), 86400);
+            memCachedClient.set(express.getProductId() + "_" + express.getDestion() + "_" + express.getCompany(), express.getPrice(), 86400);
 
             return ResponseMessage.success();
         }

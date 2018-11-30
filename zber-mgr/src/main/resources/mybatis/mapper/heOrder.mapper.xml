@@ -23,6 +23,7 @@
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="all_money" jdbcType="DECIMAL" property="allMoney" />
     <result column="sell_price" jdbcType="DECIMAL" property="sellPrice" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderDate" />
   </resultMap>
 
   <sql id="fields">
@@ -31,7 +32,7 @@
     remark, address, product,
     unit_price, is_pay, number,
     is_get_ticket, tick_type, tick_money,
-    express_type, express_expense, remarks,all_money,sell_price
+    express_type, express_expense, remarks,all_money,sell_price,order_time
   </sql>
 
   <sql id="values">
@@ -41,7 +42,7 @@
     #{unitPrice,jdbcType=INTEGER}, #{isPay,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER},
     #{isGetTicket,jdbcType=VARCHAR}, #{tickType,jdbcType=CHAR}, #{tickMoney,jdbcType=INTEGER},
     #{expressType,jdbcType=VARCHAR}, #{expressExpense,jdbcType=DECIMAL}, #{remarks,jdbcType=VARCHAR},
-    #{allMoney,jdbcType=DECIMAL}, #{sellPrice,jdbcType=DECIMAL}
+    #{allMoney,jdbcType=DECIMAL}, #{sellPrice,jdbcType=DECIMAL},#{orderDate}
   </sql>
 
   <insert id="insert" parameterType="com.zb.zber.data.model.HeOrder">

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -27,68 +28,64 @@ public class OwnerControllerApi {
     @Autowired
     private IOwnerService ownerService;
 
-    @RequestMapping(value={"/list-page"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/list-page"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listOwnerPage(Owner owner, PaginationOrdersList<Owner> page, HttpServletRequest request)
-    {
+    public ResponseMessage listOwnerPage(Owner owner, PaginationOrdersList<Owner> page, HttpServletRequest request, HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         page = this.ownerService.listOwner(page, owner);
         return ResponseMessage.success(page);
     }
 
-    @RequestMapping(value={"/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/list"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listOwner(Owner owner, HttpServletRequest request)
-    {
+    public ResponseMessage listOwner(Owner owner, HttpServletRequest request, HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         List<Owner> ownerList = this.ownerService.selectList(owner);
         return ResponseMessage.success(ownerList);
     }
 
-    @RequestMapping(value={"/add"}, produces={"application/json"})
+    @RequestMapping(value = {"/add"}, produces = {"application/json"})
     @ResponseBody
-    public ResponseMessage addOwner(Owner owner, HttpServletRequest request) throws BusinessException
-    {
-        try
-        {
-            ParamCheckUtils.notAllNull(new Object[] { owner.getName() }, new String[] { "name" });
+    public ResponseMessage addOwner(Owner owner, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
+        try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            ParamCheckUtils.notAllNull(new Object[]{owner.getName()}, new String[]{"name"});
             this.ownerService.insert(owner);
             return ResponseMessage.success();
-        }
-        catch (BusinessException e)
-        {
-            return ResponseMessage.error((String)e.getValue(),
-                    MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+        } catch (BusinessException e) {
+            return ResponseMessage.error((String) e.getValue(),
+                    MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
     }
 
-    @RequestMapping(value={"/update"}, produces={"application/json"})
+    @RequestMapping(value = {"/update"}, produces = {"application/json"})
     @ResponseBody
-    public ResponseMessage updateOwner(String id, HttpServletRequest request)
-    {
+    public ResponseMessage updateOwner(String id, HttpServletRequest request) {
         if (StringUtils.isNotEmpty(id)) {
             this.ownerService.deleteById(id);
         }
         return ResponseMessage.success();
     }
 
-    @RequestMapping(value={"/detail"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/detail"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage getOwner(String id, HttpServletRequest request)
-    {
-        if (StringUtils.isNotEmpty(id))
-        {
+    public ResponseMessage getOwner(String id, HttpServletRequest request) {
+        if (StringUtils.isNotEmpty(id)) {
             Owner owner = this.ownerService.selectById(id);
             return ResponseMessage.success(owner);
         }
         return ResponseMessage.success();
     }
 
-    @RequestMapping(value={"/delete"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/delete"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage deleteOwner(String id, HttpServletRequest request)
-    {
-        if (StringUtils.isNotEmpty(id)) {
-            this.ownerService.deleteById(id);
+    public ResponseMessage deleteOwner(String id, HttpServletRequest request, HttpServletResponse response) {
+        {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            if (StringUtils.isNotEmpty(id)) {
+                this.ownerService.deleteById(id);
+            }
+            return ResponseMessage.success();
         }
-        return ResponseMessage.success();
     }
 }

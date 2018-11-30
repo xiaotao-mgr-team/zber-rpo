@@ -1,6 +1,7 @@
 package com.zb.zber.data.model;
 
 import com.zb.zber.common.core.persistence.entity.EntityObject;
+import com.zb.zber.common.utils.DatetimeUtilies;
 
 import java.util.Date;
 
@@ -36,31 +37,29 @@ public class Customer extends EntityObject {
 
     public void format()
     {
-//        setProductName((String)memCachedClient.get("PRODUCT_UNIT_NAME_" + this.product));
-//        setExpressName((String)memCachedClient.get("EXPRESS_" + this.expressType));
-//        if (getIsGetTicket().booleanValue()) {
-//            setIsGetTicketStr("未开具");
-//        } else {
-//            setIsGetTicketStr("开具");
-//        }
-//        if (getIsPay().booleanValue()) {
-//            setIsPayStr("到付");
-//        } else {
-//            setIsPayStr("现款");
-//        }
-//        if (this.orderDate != null) {
-//            setOrderDateStr(DatetimeUtilies.formatDateTime("yyyy-MM-dd", this.orderDate));
-//        }
-//        if ((this.unitPrice != null) && (this.number != null) && (this.expense != null) && (this.tickMoney != null)) {
-//            setSumMoney(Double.valueOf(this.unitPrice.intValue() * this.number.intValue() + this.expense.intValue() + this.tickMoney.doubleValue()));
-//        } else if ((this.unitPrice != null) && (this.number != null) && (this.expense != null)) {
-//            setSumMoney(Double.valueOf(this.unitPrice.intValue() * this.number.intValue() + this.expense.intValue()));
-//        }
-//        if ("1".equals(this.owner)) {
-//            this.owner = "小桃";
-//        } else if ("2".equals(this.owner)) {
-//            this.owner = "小崔";
-//        }
+        if (getIsGetTicket().booleanValue()) {
+            setIsGetTicketStr("未开具");
+        } else {
+            setIsGetTicketStr("开具");
+        }
+        if (getIsPay().booleanValue()) {
+            setIsPayStr("到付");
+        } else {
+            setIsPayStr("现款");
+        }
+        if (this.orderDate != null) {
+            setOrderDateStr(DatetimeUtilies.formatDateTime("yyyy-MM-dd", this.orderDate));
+        }
+        if ((this.unitPrice != null) && (this.number != null) && (this.expense != null) && (this.tickMoney != null)) {
+            setSumMoney(Double.valueOf(this.unitPrice.intValue() * this.number.intValue() + this.expense.intValue() + this.tickMoney.doubleValue()));
+        } else if ((this.unitPrice != null) && (this.number != null) && (this.expense != null)) {
+            setSumMoney(Double.valueOf(this.unitPrice.intValue() * this.number.intValue() + this.expense.intValue()));
+        }
+        if ("1".equals(this.owner)) {
+            this.owner = "小桃";
+        } else if ("2".equals(this.owner)) {
+            this.owner = "小崔";
+        }
     }
 
     public String getAddress()

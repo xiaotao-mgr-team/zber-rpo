@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by cuixt on 2018/8/2.
  */
 
-@RequestMapping({"/bgr/customer"})
+@RequestMapping({"/bgr/heOrder"})
 @Controller
 public class HeOrderControllerApi {
 
@@ -35,12 +35,8 @@ public class HeOrderControllerApi {
     public ResponseMessage addHeOrder( HeOrder heOrder, HttpServletRequest request, HttpServletResponse response) {
         try {
             response.addHeader("Access-Control-Allow-Origin", "*");
-            ParamCheckUtils.notAllNull(new Object[]{heOrder.getAddress(), heOrder.getIsPay(), heOrder.getNumber(), heOrder.getProduct()},
-                    new String[]{"Address", "IsPay", "Number", "Product"});
-            if (!heOrder.getGetTicket()) {
-                ParamCheckUtils.notAllNull(new Object[]{heOrder.getTickType(), heOrder.getTickMoney()},
-                        new String[]{"TickType", "TickMoney"});
-            }
+            ParamCheckUtils.notAllNull(new Object[]{heOrder.getAddress(), heOrder.getProduct()},
+                    new String[]{"Address", "Product"});
             heOrderService.insert(heOrder);
             return ResponseMessage.success();
 
@@ -50,9 +46,9 @@ public class HeOrderControllerApi {
         }
     }
 
-    @RequestMapping(value = {"/delete"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
+    @RequestMapping(value={"/delete"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage delete(@ModelAttribute String id, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseMessage delete(String id, HttpServletRequest request, HttpServletResponse response) {
         try {
             response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});

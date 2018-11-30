@@ -22,6 +22,7 @@ public class HeOrder extends EntityObject {
     private String remarks;
     private BigDecimal allMoney;
     private BigDecimal sellPrice;
+    private String orderDateStr;
 
     public String getAddress()
     {
@@ -143,5 +144,13 @@ public class HeOrder extends EntityObject {
 
     public void setGetTicket(Boolean getTicket) {
         isGetTicket = getTicket;
+    }
+
+    public String getOrderDateStr() {
+        return orderDateStr;
+    }
+
+    public void setOrderDateStr(String orderDateStr) {
+        this.orderDateStr = orderDateStr;
     }
 }

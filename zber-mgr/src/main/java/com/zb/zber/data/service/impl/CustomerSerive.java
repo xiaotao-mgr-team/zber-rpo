@@ -70,7 +70,6 @@ public class CustomerSerive implements ICustomerSerive {
             stockRecord.setType("-");
             stockRecord.setNumber("-" + oldCustomer.getNumber());
             stockRecord.setRemark("订单更新");
-            stockRecord.setUserName(customer.getOwner());
             stockRecordMapper.insert(stockRecord);
 
             Stock stock = stockMapper.selectByProductId(oldCustomer.getProduct());
@@ -85,31 +84,30 @@ public class CustomerSerive implements ICustomerSerive {
     }
 
     public int deleteById(String id) {
-        StockRecord stockRecord = new StockRecord();
-
-        Customer oldCustomer = customerMapper.selectById(id);
-        if (!StringUtils.isEmpty(oldCustomer.getProduct())) {
-            Object productName = memCachedClient.get("PRODUCT_UNIT_NAME_" + oldCustomer.getProduct());
-            if (productName == null) {
-                Product product = productMapper.selectById(oldCustomer.getProduct());
-                if (product != null) {
-                    stockRecord.setProductName(product.getTitle());
-                }
-            } else {
-                stockRecord.setProductName((String) productName);
-            }
-        }
-        stockRecord.setProductId(oldCustomer.getProduct());
-        stockRecord.setType("-");
-        stockRecord.setNumber("+" + oldCustomer.getNumber());
-        stockRecord.setRemark("订单删除");
-        stockRecord.setUserName(oldCustomer.getOwner());
-        stockRecordMapper.insert(stockRecord);
-
-        Stock stock = stockMapper.selectByProductId(oldCustomer.getProduct());
-
-        stock.setLeftNumber(stock.getLeftNumber() + oldCustomer.getNumber().intValue());
-        stockMapper.updateByProductId(stock);
+//        StockRecord stockRecord = new StockRecord();
+//
+//        Customer oldCustomer = customerMapper.selectById(id);
+//        if (!StringUtils.isEmpty(oldCustomer.getProduct())) {
+//            Object productName = memCachedClient.get("PRODUCT_UNIT_NAME_" + oldCustomer.getProduct());
+//            if (productName == null) {
+//                Product product = productMapper.selectById(oldCustomer.getProduct());
+//                if (product != null) {
+//                    stockRecord.setProductName(product.getTitle());
+//                }
+//            } else {
+//                stockRecord.setProductName((String) productName);
+//            }
+//        }
+//        stockRecord.setProductId(oldCustomer.getProduct());
+//        stockRecord.setType("-");
+//        stockRecord.setNumber("+" + oldCustomer.getNumber());
+//        stockRecord.setRemark("订单删除");
+//        stockRecordMapper.insert(stockRecord);
+//
+//        Stock stock = stockMapper.selectByProductId(oldCustomer.getProduct());
+//
+//        stock.setLeftNumber(stock.getLeftNumber() + oldCustomer.getNumber().intValue());
+//        stockMapper.updateByProductId(stock);
 
         return customerMapper.deleteById(id);
     }

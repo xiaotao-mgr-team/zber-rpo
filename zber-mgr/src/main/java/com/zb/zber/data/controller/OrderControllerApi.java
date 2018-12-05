@@ -11,10 +11,8 @@ import com.zb.zber.common.utils.ParamCheckUtils;
 import com.zb.zber.common.web.comp.ace.ResponseMessage;
 import com.zb.zber.common.web.comp.ace.i18n.MessageResolver;
 import com.zb.zber.data.model.Customer;
-import com.zb.zber.data.model.Express;
 import com.zb.zber.data.model.IsPay;
 import com.zb.zber.data.service.ICustomerSerive;
-import com.zb.zber.data.service.IExpressService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -41,14 +39,15 @@ public class OrderControllerApi {
     private static final Logger logger = LoggerFactory.getLogger(OrderControllerApi.class);
     @Autowired
     private ICustomerSerive customerService;
-    @Autowired
-    private IExpressService expressService;
 
     @Autowired
     private MemCachedClient memCachedClient;
 
     public Customer CustomerFormat(Customer customer)
     {
+        if(customer == null){
+            return null;
+        }
         try
         {
             if (StringUtils.isEmpty(customer.getOrderDateStr())) {
@@ -65,10 +64,9 @@ public class OrderControllerApi {
         {
             customer.setIsGetTicket(Boolean.valueOf(true));
             customer.setTickType("");
-            customer.setTickMoney(null);
-        }
-        else
-        {
+            customer.setTickMoney(0D);
+            customer.setTickExpense(0D);
+        } else {
             try
             {
                 ParamCheckUtils.notAllNull(new Object[] { customer.getTickType(), customer.getSellPrice() },
@@ -79,53 +77,31 @@ public class OrderControllerApi {
                 e.printStackTrace();
             }
             if ("5P".equals(customer.getTickType().toUpperCase())) {
-                customer.setTickMoney(Double.valueOf(customer.getSellPrice().intValue() * 0.05D));
+                customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.03D));
             } else {
-                customer.setTickMoney(Double.valueOf(customer.getSellPrice().intValue() * 0.1D));
+                customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.1D));
             }
         }
         customer.setUnitPrice(Integer.valueOf(Integer.parseInt(String.valueOf(memCachedClient.get("PRODUCT_UNIT_PRICE_" + customer.getProduct())))));
+        customer.setName(String.valueOf(memCachedClient.get("PRODUCT_UNIT_NAME_" + customer.getProduct())));
         if (customer.getIsPay() == null) {
             customer.setIsPay(Boolean.valueOf(false));
         }
-        if (!customer.getIsUseModule().booleanValue()) {
-            if ("34d83e73-5a42-4fc7-a55b-3a087071eeca".equals(customer.getProduct()))
-            {
-                customer.setExpense(Integer.valueOf(10));
-            }
-            else
-            {
-                String price = String.valueOf(memCachedClient.get(customer.getProduct() + "_" + customer.getDestion() + "_" + customer.getExpressType()));
-                if ((StringUtils.isNotEmpty(price)) && (!"null".equals(price)))
-                {
-                    customer.setExpense(Integer.valueOf(Integer.parseInt(price)));
-                }
-                else
-                {
-                    Express express = new Express();
-                    express.setCompany(customer.getExpressType());
-                    express.setDestion(customer.getDestion());
-                    express.setProductId(customer.getProduct());
 
-                    PaginationOrdersList<Express> page = new PaginationOrdersList();
-                    page.getPagination().setCurrentPage(1);
-                    page.getPagination().setPageSize(100);
-                    try
-                    {
-                        page = this.expressService.listExpress(page, express);
-                    }
-                    catch (BusinessException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    if ((page != null) && (page.getDatas().size() > 0)) {
-                        customer.setExpense(((Express)page.getDatas().get(0)).getPrice());
-                    } else {
-                        customer.setExpense(Integer.valueOf(0));
-                    }
-                }
-            }
+        if (customer.getIsUseModule() !=null && !customer.getIsUseModule().booleanValue()) {
+            // todo 是否使用运费模板
         }
+
+        Double totolMoney = customer.getTickExpense().doubleValue(); //初始化成发票的价格
+        totolMoney = totolMoney + customer.getExpense().intValue();  //加运费的价格
+
+        if(customer.getSellPrice() == null){
+            totolMoney = customer.getUnitPrice().intValue() * customer.getNumber().intValue() + totolMoney;
+        }else{
+            totolMoney = totolMoney + customer.getSellPrice().intValue();
+        }
+
+        customer.setSumMoney(totolMoney);
         return customer;
     }
 
@@ -136,8 +112,8 @@ public class OrderControllerApi {
         try
         {
             response.addHeader("Access-Control-Allow-Origin", "*");
-            ParamCheckUtils.notAllNull(new Object[] { customer.getProduct(), customer.getNumber(), customer.getExpense(), customer.getOwner() },
-                    new String[] { "Product", "Number", "Expense", "Owner" });
+            ParamCheckUtils.notAllNull(new Object[] { customer.getProduct(), customer.getNumber(), customer.getOrderDateStr()},
+                    new String[] { "Product", "Number", "OrderDate" });
 
             this.customerService.addCustomer(CustomerFormat(customer));
             return ResponseMessage.success();

@@ -19,7 +19,7 @@ import java.util.List;
 
 @RequestMapping({"/bgr/stock"})
 @Controller
-public class stockControllerApi {
+public class StockControllerApi {
 
     @Autowired
     private IStockService stockService;

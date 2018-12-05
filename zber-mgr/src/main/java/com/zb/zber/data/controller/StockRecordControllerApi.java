@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping({"/bgr/stockRecord"})
 @Controller
-public class stockRecordControllerApi {
+public class StockRecordControllerApi {
     @Autowired
     private IStockRecordService stockRecordService;
 

@@ -27,13 +27,16 @@ public class Customer extends EntityObject {
     private Double tickMoney;
     private String remarks;
     private Date orderDate;
-    private String owner;
-    private String productName;
-    private String expressName;
+
     private String isPayStr;
     private String isGetTicketStr;
     private String orderDateStr;
     private Double sumMoney;
+    private Double tickExpense;
+
+    //==额外展示属性
+    private String expressName;
+    private String productName;
 
     public void format()
     {
@@ -49,16 +52,6 @@ public class Customer extends EntityObject {
         }
         if (this.orderDate != null) {
             setOrderDateStr(DatetimeUtilies.formatDateTime("yyyy-MM-dd", this.orderDate));
-        }
-        if ((this.unitPrice != null) && (this.number != null) && (this.expense != null) && (this.tickMoney != null)) {
-            setSumMoney(Double.valueOf(this.unitPrice.intValue() * this.number.intValue() + this.expense.intValue() + this.tickMoney.doubleValue()));
-        } else if ((this.unitPrice != null) && (this.number != null) && (this.expense != null)) {
-            setSumMoney(Double.valueOf(this.unitPrice.intValue() * this.number.intValue() + this.expense.intValue()));
-        }
-        if ("1".equals(this.owner)) {
-            this.owner = "小桃";
-        } else if ("2".equals(this.owner)) {
-            this.owner = "小崔";
         }
     }
 
@@ -292,13 +285,37 @@ public class Customer extends EntityObject {
         this.sumMoney = sumMoney;
     }
 
-    public String getOwner()
-    {
-        return this.owner;
+
+
+    public Boolean getPay() {
+        return isPay;
     }
 
-    public void setOwner(String owner)
-    {
-        this.owner = owner;
+    public void setPay(Boolean pay) {
+        isPay = pay;
+    }
+
+    public Boolean getUseModule() {
+        return isUseModule;
+    }
+
+    public void setUseModule(Boolean useModule) {
+        isUseModule = useModule;
+    }
+
+    public Boolean getGetTicket() {
+        return isGetTicket;
+    }
+
+    public void setGetTicket(Boolean getTicket) {
+        isGetTicket = getTicket;
+    }
+
+    public Double getTickExpense() {
+        return tickExpense;
+    }
+
+    public void setTickExpense(Double tickExpense) {
+        this.tickExpense = tickExpense;
     }
 }

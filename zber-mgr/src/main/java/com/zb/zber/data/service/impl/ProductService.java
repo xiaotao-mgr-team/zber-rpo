@@ -29,7 +29,6 @@ public class ProductService implements IProductService {
     private IProductDao productDao;
 
     public PaginationOrdersList<Product> listProduct(PaginationOrdersList<Product> page, Product product) throws BusinessException {
-//        List<Product> products = productDao.listProduct(page,product);
         page = productDao.listProduct(page, product);
         if ((page == null) || (CollectionUtils.isEmpty(page.getDatas()))) {
             return page;

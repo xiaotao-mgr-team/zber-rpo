@@ -25,16 +25,19 @@
     <result column="is_get_ticket" jdbcType="BIT" property="isGetTicket" />
     <result column="tick_type" jdbcType="CHAR" property="tickType" />
     <result column="tick_money" jdbcType="DOUBLE" property="tickMoney" />
+    <result column="tick_expense" jdbcType="DOUBLE" property="tickExpense" />
     <result column="order_time" jdbcType="TIMESTAMP" property="orderDate" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="express_type" jdbcType="VARCHAR" property="expressType" />
-    <result column="owner" jdbcType="VARCHAR" property="owner" />
+    <result column="sum_money" jdbcType="DOUBLE" property="sumMoney" />
+
+
   </resultMap>
 
   <sql id="fields">
     id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark,
     address, tel, name, product, destion, unit_price, sell_price, is_pay, number, is_use_module,
-    expense, is_get_ticket, tick_type, tick_money,order_time,remarks,express_type,owner
+    expense, is_get_ticket, tick_type, tick_money,order_time,remarks,express_type,sum_money,tick_expense
   </sql>
 
   <sql id="values">
@@ -43,7 +46,7 @@
     #{address,jdbcType=VARCHAR}, #{tel,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR}, #{destion,jdbcType=VARCHAR},
     #{unitPrice,jdbcType=INTEGER}, #{sellPrice,jdbcType=INTEGER}, #{isPay,jdbcType=BIT}, #{number,jdbcType=INTEGER}, #{isUseModule,jdbcType=BIT},
     #{expense,jdbcType=INTEGER}, #{isGetTicket,jdbcType=BIT}, #{tickType,jdbcType=CHAR}, #{tickMoney,jdbcType=DOUBLE},
-    #{orderDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, #{expressType,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}
+    #{orderDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, #{expressType,jdbcType=VARCHAR}, #{sumMoney,jdbcType=DOUBLE}, #{tickExpense,jdbcType=DOUBLE}
   </sql>
 
   <insert id="insert" parameterType="com.zb.zber.data.model.Customer">
@@ -134,8 +137,11 @@
       <if test="expressType != null">
         express_type = #{expressType},
       </if>
-      <if test="owner != null">
-        owner = #{owner,jdbcType=VARCHAR},
+      <if test="sumMoney != null">
+        sum_money = #{sumMoney},
+      </if>
+      <if test="tickExpense != null">
+        tick_expense = #{tickExpense,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=CHAR} and delete_flag = 0

@@ -2,6 +2,7 @@ package com.zb.zber.data.model;
 
 import com.zb.zber.common.core.persistence.entity.EntityObject;
 import com.zb.zber.common.utils.DatetimeUtilies;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 
@@ -25,6 +26,7 @@ public class Customer extends EntityObject {
     private Boolean isGetTicket;
     private String tickType;
     private Double tickMoney;
+    private Double tickExpense;
     private String remarks;
     private Date orderDate;
 
@@ -32,7 +34,11 @@ public class Customer extends EntityObject {
     private String isGetTicketStr;
     private String orderDateStr;
     private Double sumMoney;
-    private Double tickExpense;
+
+    private String tickTypeStr;
+    private String tickMoneyStr;
+    private String tickExpenseStr;
+
 
     //==额外展示属性
     private String expressName;
@@ -40,6 +46,15 @@ public class Customer extends EntityObject {
 
     public void format()
     {
+        if(StringUtils.isBlank(getTickType())){
+            setTickTypeStr("-");
+        }else{
+            if("5P".equals(getTickType())){
+                setTickTypeStr("普票");
+            }else{
+                setTickTypeStr("增票");
+            }
+        }
         if (getIsGetTicket().booleanValue()) {
             setIsGetTicketStr("未开具");
         } else {
@@ -53,6 +68,30 @@ public class Customer extends EntityObject {
         if (this.orderDate != null) {
             setOrderDateStr(DatetimeUtilies.formatDateTime("yyyy-MM-dd", this.orderDate));
         }
+    }
+
+    public String getTickTypeStr() {
+        return tickTypeStr;
+    }
+
+    public void setTickTypeStr(String tickTypeStr) {
+        this.tickTypeStr = tickTypeStr;
+    }
+
+    public String getTickMoneyStr() {
+        return tickMoneyStr;
+    }
+
+    public void setTickMoneyStr(String tickMoneyStr) {
+        this.tickMoneyStr = tickMoneyStr;
+    }
+
+    public String getTickExpenseStr() {
+        return tickExpenseStr;
+    }
+
+    public void setTickExpenseStr(String tickExpenseStr) {
+        this.tickExpenseStr = tickExpenseStr;
     }
 
     public String getAddress()

@@ -12,7 +12,9 @@ import com.zb.zber.common.web.comp.ace.ResponseMessage;
 import com.zb.zber.common.web.comp.ace.i18n.MessageResolver;
 import com.zb.zber.data.model.Customer;
 import com.zb.zber.data.model.IsPay;
+import com.zb.zber.data.model.Product;
 import com.zb.zber.data.service.ICustomerSerive;
+import com.zb.zber.data.service.IProductService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -39,6 +41,9 @@ public class OrderControllerApi {
     private static final Logger logger = LoggerFactory.getLogger(OrderControllerApi.class);
     @Autowired
     private ICustomerSerive customerService;
+
+    @Autowired
+    private IProductService productService;
 
     @Autowired
     private MemCachedClient memCachedClient;
@@ -82,8 +87,9 @@ public class OrderControllerApi {
                 customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.1D));
             }
         }
-        customer.setUnitPrice(Integer.valueOf(Integer.parseInt(String.valueOf(memCachedClient.get("PRODUCT_UNIT_PRICE_" + customer.getProduct())))));
-        customer.setName(String.valueOf(memCachedClient.get("PRODUCT_UNIT_NAME_" + customer.getProduct())));
+        Product product = productService.selectById(customer.getProduct());
+        customer.setUnitPrice(product.getPrice());
+        customer.setName(product.getTitle());
         if (customer.getIsPay() == null) {
             customer.setIsPay(Boolean.valueOf(false));
         }

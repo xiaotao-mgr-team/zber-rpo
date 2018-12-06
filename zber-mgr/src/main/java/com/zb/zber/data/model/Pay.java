@@ -2,8 +2,6 @@ package com.zb.zber.data.model;
 
 import com.zb.zber.common.core.persistence.entity.EntityObject;
 
-import java.util.Date;
-
 /**
  * Created by cuixt on 2018/8/2.
  */
@@ -14,7 +12,7 @@ public class Pay extends EntityObject {
     private Double totalFare;
     private Double totalTax;
     private Boolean isDestion;
-    private Date checkDate;
+    private String checkDate;
 
     public Integer getTotal()
     {
@@ -66,13 +64,19 @@ public class Pay extends EntityObject {
         this.isDestion = isDestion;
     }
 
-    public Date getCheckDate()
-    {
-        return this.checkDate;
+    public Boolean getDestion() {
+        return isDestion;
     }
 
-    public void setCheckDate(Date checkDate)
-    {
+    public void setDestion(Boolean destion) {
+        isDestion = destion;
+    }
+
+    public String getCheckDate() {
+        return checkDate;
+    }
+
+    public void setCheckDate(String checkDate) {
         this.checkDate = checkDate;
     }
 }

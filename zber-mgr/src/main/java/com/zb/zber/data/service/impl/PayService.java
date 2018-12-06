@@ -26,16 +26,12 @@ public class PayService implements IPayService {
 
     public int updatePay(String createTime)
     {
-        try
-        {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            return payMapper.updatePay(format.parse(createTime));
-        }
-        catch (ParseException e)
-        {
-            e.printStackTrace();
-        }
-        return 11;
+        return payMapper.updatePay(createTime);
+    }
+
+    @Override
+    public int deleteByDate(String dataTime) {
+        return payMapper.deleteByDate(dataTime);
     }
 
     public PaginationOrdersList<Pay> listPay(PaginationOrdersList<Pay> page, Pay pay)

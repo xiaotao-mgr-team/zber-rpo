@@ -18,19 +18,26 @@ public class PayDao extends SuperDao implements IPayDao {
     @Override
     public int add(Pay pay) {
         pay.preInsert();
-        return super.insert("com.jlyc.geron.wire.po.payCheck.Pay.insert", pay);
+        return super.insert("com.zb.zber.data.model.Pay.insert", pay);
     }
 
     @Override
-    public int updatePay(Date checkTime) {
+    public int deleteByDate(String dataTime) {
+        Map<String, Object> maps = Maps.newHashMap();
+        maps.put("checkDate", dataTime);
+        return super.update("com.zb.zber.data.model.Pay.deleteByCheckDate", maps);
+    }
+
+    @Override
+    public int updatePay(String checkTime) {
         Map<String, Object> maps = Maps.newHashMap();
         maps.put("checkDate", checkTime);
-        return super.update("com.jlyc.geron.wire.po.payCheck.Pay.updateById", maps);
+        return super.update("com.zb.zber.data.model.Pay.updateById", maps);
     }
 
     @Override
     public PaginationOrdersList<Pay> listPay(PaginationOrdersList<Pay> page, Pay pay) {
-        return super.selectPage("com.jlyc.geron.wire.po.payCheck.Pay.listPay", pay, page);
+        return super.selectPage("com.zb.zber.data.model.Pay.listPay", pay, page);
     }
 
     @Override
@@ -38,6 +45,6 @@ public class PayDao extends SuperDao implements IPayDao {
         Map<String, Object> maps = Maps.newHashMap();
         maps.put("createTime", createTime);
         maps.put("isDestion", Boolean.valueOf(isDestion));
-        return (Pay)super.selectOne("com.jlyc.geron.wire.po.payCheck.Pay.queryPay", maps);
+        return (Pay)super.selectOne("com.zb.zber.data.model.Pay.queryPay", maps);
     }
 }

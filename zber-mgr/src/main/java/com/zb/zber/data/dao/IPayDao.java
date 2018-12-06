@@ -12,7 +12,9 @@ import java.util.Date;
 public interface IPayDao {
     int add(Pay paramPay);
 
-    int updatePay(Date paramDate);
+    int deleteByDate(String dataTime);
+
+    int updatePay(String id);
 
     PaginationOrdersList<Pay> listPay(PaginationOrdersList<Pay> paramPaginationOrdersList, Pay paramPay);
 

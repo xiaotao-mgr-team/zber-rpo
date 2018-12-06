@@ -11,6 +11,8 @@ public interface IPayService {
 
     int updatePay(String paramString);
 
+    int deleteByDate(String dataTime);
+
     PaginationOrdersList<Pay> listPay(PaginationOrdersList<Pay> paramPaginationOrdersList, Pay paramPay);
 
     Pay queryPay(String paramString, boolean paramBoolean);

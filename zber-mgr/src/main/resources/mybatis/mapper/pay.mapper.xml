@@ -14,7 +14,7 @@
     <result column="total_price" jdbcType="INTEGER" property="totalPrice" />
     <result column="total_fare" jdbcType="DOUBLE" property="totalFare" />
     <result column="total_tax" jdbcType="DOUBLE" property="totalTax" />
-    <result column="check_date" jdbcType="TIMESTAMP" property="checkDate" />
+    <result column="check_date" jdbcType="VARCHAR" property="checkDate" />
     <result column="is_destion" jdbcType="BIT" property="isDestion" />
   </resultMap>
 
@@ -26,25 +26,26 @@
   <sql id="values">
     #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
     #{remark,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER}, #{totalPrice,jdbcType=INTEGER}, #{totalFare,jdbcType=DOUBLE}, #{totalTax,jdbcType=DOUBLE},
-    #{checkDate,jdbcType=TIMESTAMP},#{isDestion,jdbcType=BIT}
+    #{checkDate,jdbcType=VARCHAR},#{isDestion,jdbcType=BIT}
   </sql>
 
-  <!-- æå¥æ°æ°æ® -->
   <insert id="insert" parameterType="com.zb.zber.data.model.Pay">
     insert into tb_pay (<include refid="fields" />)
     values (<include refid="values" />)
   </insert>
 
-  <!-- æ´æ°æ°æ°æ® -->
   <update id="updateById" parameterType="map">
     update tb_pay
     <set>
-      delete_flag = 1
+      is_destion = 1
     </set>
-    where check_date = #{checkDate} and delete_flag = 0
+    where check_date = #{checkDate} and delete_flag = 0 and is_destion = 0
   </update>
 
-  <!-- ç®è´¦è®°å½ -->
+  <update id="deleteByCheckDate" parameterType="map">
+    delete from tb_pay where check_date = #{checkDate}
+  </update>
+
   <select id="listPay" parameterType="com.zb.zber.data.model.Pay" resultMap="BaseResultMap">
     select
     <include refid="fields" />

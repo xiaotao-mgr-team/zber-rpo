@@ -61,9 +61,10 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { product.getTypeId(), product.getIntroduce(), product.getPrice(), product.getTitle() },
                     new String[] { "TypeId", "Introduce", "Price", "Title" });
-            response.addHeader("Access-Control-Allow-Origin", "*");
+
             Product pt = this.productService.addProduct(product);
             memCachedClient.set("PRODUCT_UNIT_NAME_" + pt.getId(), pt.getTitle());
             memCachedClient.set("PRODUCT_UNIT_PRICE_" + pt.getId(), pt.getPrice());
@@ -111,12 +112,37 @@ public class ProductControllerBgr {
 
     @RequestMapping(value={"/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listProduct(PaginationOrdersList<Product> page, Product product, HttpServletRequest request, HttpServletResponse response)
+    public ResponseMessage listWebsiteProduct(PaginationOrdersList<Product> page, Product product, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
             response.addHeader("Access-Control-Allow-Origin", "*");
             page = this.productService.listProduct(page, product);
+            return ResponseMessage.success(page);
+        }
+        catch (BusinessException e)
+        {
+            logger.warn("api.list. error!", e);
+            return ResponseMessage.error((String)e.getValue(), MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+        }
+    }
+
+    /**
+     * 后台所有的数据
+     * @param page
+     * @param product
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value={"/list-back"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    public ResponseMessage listAllProduct(PaginationOrdersList<Product> page, Product product, HttpServletRequest request, HttpServletResponse response)
+    {
+        try
+        {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            page = this.productService.listAllProduct(page, product);
             if ((page != null) && (page.getDatas() != null) && (page.getDatas().size() > 0)) {
                 for (Product pt : page.getDatas()) {
                     memCachedClient.set(pt.getId(), pt.getTitle());

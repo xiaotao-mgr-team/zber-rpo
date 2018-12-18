@@ -18,18 +18,21 @@
 
     <result column="small_p" jdbcType="VARCHAR" property="smallP" />
     <result column="big_p" jdbcType="VARCHAR" property="bigP" />
+    <result column="is_dis_websize" jdbcType="CHAR" property="isDisWebsite" />
+
   </resultMap>
 
   <sql id="fields">
     id, create_user_id, create_time,modify_user_id, modify_time, delete_flag, remark,
-    title, type_id, price, introduce, img,small_p,big_p
+    title, type_id, price, introduce, img,small_p,big_p,is_dis_websize
   </sql>
 
   <sql id="values">
     #{id,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},
     #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{delf,jdbcType=INTEGER},
     #{remark,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{typeId,jdbcType=CHAR},
-    #{price,jdbcType=INTEGER}, #{introduce,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{smallP,jdbcType=VARCHAR}, #{bigP,jdbcType=VARCHAR}
+    #{price,jdbcType=INTEGER}, #{introduce,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR},
+    #{smallP,jdbcType=VARCHAR}, #{bigP,jdbcType=VARCHAR},#{isDisWebsite,jdbcType=CHAR}
   </sql>
 
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -51,6 +54,22 @@
   </insert>
 
   <select id="listProduct" parameterType="com.zb.zber.data.model.Product" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_product
+    <where>
+      delete_flag = 0 and is_dis_websize =1
+      <if test="typeId != null">
+        and type_id = #{typeId,jdbcType=CHAR}
+      </if>
+      <if test="title != null">
+        and title like CONCAT('%',#{title},'%')
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <select id="listAllProduct" parameterType="com.zb.zber.data.model.Product" resultMap="BaseResultMap">
     select
     <include refid="fields" />
     from tb_product
@@ -89,6 +108,9 @@
       </if>
       <if test="bigP != null">
         big_p = #{bigP,jdbcType=VARCHAR},
+      </if>
+      <if test="isDisWebsite != null">
+        is_dis_websize = #{isDisWebsite,jdbcType=CHAR},
       </if>
     </set>
     where id = #{id,jdbcType=CHAR} and delete_flag = 0

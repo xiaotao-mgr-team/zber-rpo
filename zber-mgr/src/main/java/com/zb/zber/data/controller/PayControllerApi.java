@@ -69,7 +69,6 @@ public class PayControllerApi {
                     PayCheck(str);
                 }
             }
-
             return ResponseMessage.success();
         } catch (ParseException e) {
             return ResponseMessage.error(e.getMessage(),  MessageResolver.getMessage(request, (String)e.getMessage()));

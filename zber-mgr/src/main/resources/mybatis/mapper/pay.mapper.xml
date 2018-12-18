@@ -15,7 +15,7 @@
     <result column="total_fare" jdbcType="DOUBLE" property="totalFare" />
     <result column="total_tax" jdbcType="DOUBLE" property="totalTax" />
     <result column="check_date" jdbcType="VARCHAR" property="checkDate" />
-    <result column="is_destion" jdbcType="BIT" property="isDestion" />
+    <result column="is_destion" jdbcType="CHAR" property="isDestion" />
   </resultMap>
 
   <sql id="fields">

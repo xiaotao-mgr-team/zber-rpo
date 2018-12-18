@@ -13,6 +13,20 @@ public class Pay extends EntityObject {
     private Double totalTax;
     private Boolean isDestion;
     private String checkDate;
+    private String destionStr;
+
+    public String getDestionStr() {
+        return destionStr;
+    }
+
+    public void setDestionStr(String destionStr) {
+
+        if(this.getDestion()){
+            this.destionStr = "已结算";
+        }else{
+            this.destionStr = "未结算";
+        }
+    }
 
     public Integer getTotal()
     {

@@ -39,6 +39,18 @@ public class ProductService implements IProductService {
         return page;
     }
 
+    @Override
+    public PaginationOrdersList<Product> listAllProduct(PaginationOrdersList<Product> page, Product product) throws BusinessException {
+        page = productDao.listAllProduct(page, product);
+        if ((page == null) || (CollectionUtils.isEmpty(page.getDatas()))) {
+            return page;
+        }
+        for (Product p : page.getDatas()) {
+            p.format();
+        }
+        return page;
+    }
+
     public int updateById(Product product) {
         return productMapper.updateById(product);
     }

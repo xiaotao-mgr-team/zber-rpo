@@ -20,6 +20,7 @@ public class Product extends EntityObject {
     private Integer price;
     private String bigP;
     private String smallP;
+    private String isDisWebsite;
 
     //===额外属性
     private String imgUrl;
@@ -162,5 +163,13 @@ public class Product extends EntityObject {
 
     public void setSmallPUrl(List<String> smallPUrl) {
         this.smallPUrl = smallPUrl;
+    }
+
+    public String getIsDisWebsite() {
+        return isDisWebsite;
+    }
+
+    public void setIsDisWebsite(String isDisWebsite) {
+        this.isDisWebsite = isDisWebsite;
     }
 }

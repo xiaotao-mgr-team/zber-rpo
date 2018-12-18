@@ -14,6 +14,8 @@ public interface IProductDao {
 
     PaginationOrdersList<Product> listProduct(PaginationOrdersList<Product> paramPaginationOrdersList, Product paramProduct);
 
+    PaginationOrdersList<Product> listAllProduct(PaginationOrdersList<Product> page, Product product);
+
     int updateById(Product paramProduct);
 
     Product addProduct(Product paramProduct) throws BusinessException;

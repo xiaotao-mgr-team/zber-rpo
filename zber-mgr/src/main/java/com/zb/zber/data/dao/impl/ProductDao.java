@@ -21,6 +21,11 @@ public class ProductDao extends SuperDao implements IProductDao {
     }
 
     @Override
+    public PaginationOrdersList<Product> listAllProduct(PaginationOrdersList<Product> page, Product product) {
+        return super.selectPage("com.zb.zber.data.model.Product.listAllProduct", product, page);
+    }
+
+    @Override
     public int updateById(Product product) {
         return super.update("com.zb.zber.data.model.Product.updateById", product);
     }

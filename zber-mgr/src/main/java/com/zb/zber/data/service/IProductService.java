@@ -13,6 +13,8 @@ import java.util.List;
 public interface IProductService {
     PaginationOrdersList<Product> listProduct(PaginationOrdersList<Product> paramPaginationOrdersList, Product paramProduct) throws BusinessException;
 
+    PaginationOrdersList<Product> listAllProduct(PaginationOrdersList<Product> paramPaginationOrdersList, Product paramProduct) throws BusinessException;
+
     int updateById(Product paramProduct);
 
     Product addProduct(Product paramProduct) throws BusinessException;

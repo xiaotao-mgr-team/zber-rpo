@@ -29,7 +29,7 @@ public class ProductService implements IProductService {
     private IProductDao productDao;
 
     public PaginationOrdersList<Product> listProduct(PaginationOrdersList<Product> page, Product product) throws BusinessException {
-        page = productDao.listProduct(page, product);
+        page = productDao.listAllProduct(page, product);
         if ((page == null) || (CollectionUtils.isEmpty(page.getDatas()))) {
             return page;
         }

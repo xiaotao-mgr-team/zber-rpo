@@ -41,7 +41,7 @@ public class PayControllerApi {
     @ResponseBody
     public ResponseMessage listPay(Pay pay, PaginationOrdersList<Pay> page, HttpServletRequest request, HttpServletResponse response)
     {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        //response.addHeader("Access-Control-Allow-Origin", "*");
         page = this.payService.listPay(page, pay);
         return ResponseMessage.success(page);
     }
@@ -52,7 +52,7 @@ public class PayControllerApi {
     @ResponseBody
     public ResponseMessage updateDestonByid(String checkData,HttpServletRequest request, HttpServletResponse response)
     {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        //response.addHeader("Access-Control-Allow-Origin", "*");
         payService.updatePay(checkData);
         return ResponseMessage.success();
     }
@@ -61,7 +61,7 @@ public class PayControllerApi {
     @ResponseBody
     public ResponseMessage addPayCheck(String startDate, String endDate,HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            //response.addHeader("Access-Control-Allow-Origin", "*");
             List<String> times  = DatetimeUtilies.getBetweenDates(DatetimeUtilies.parse(DatetimeUtilies.DATE,startDate),DatetimeUtilies.parse(DatetimeUtilies.DATE,endDate));
             if(CollectionUtils.isNotEmpty(times)){
                 for(String str:times){

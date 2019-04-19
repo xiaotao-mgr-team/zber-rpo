@@ -58,7 +58,7 @@ public class FilePathHandler {
 
     // 获取图片下载的绝对路径
     public static String getRootDownImageUrl() {
-        return (String) RootConfigInitor.PARAMS.get("file.root.img.down.path", "http://www.zbering.com/data/formal/img/");
+        return (String) RootConfigInitor.PARAMS.get("file.root.img.down.path", "http://mgr.zbering.com/data/formal/img/");
     }
 
     // 获取文件下载的绝对路径

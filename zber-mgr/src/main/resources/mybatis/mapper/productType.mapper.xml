@@ -74,9 +74,7 @@
     select
     <include refid="fields" />
     from tb_product_type
-    <where>
-      delete_flag = 0
-    </where>
+    where delete_flag = 0
     order by id asc
   </select>
 </mapper>

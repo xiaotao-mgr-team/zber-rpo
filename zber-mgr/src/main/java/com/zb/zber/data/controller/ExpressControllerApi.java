@@ -57,7 +57,7 @@ public class ExpressControllerApi {
 
             express.setProductName((String) memCachedClient.get("PRODUCT_UNIT_NAME_" + express.getProductId()));
             express.setDestionName((String)memCachedClient.get("AREA_PROVINCE_" + express.getDestion()));
-            this.expressService.addExpress(express);
+            expressService.addExpress(express);
 
             memCachedClient.set(express.getProductId() + "_" + express.getDestion() + "_" + express.getCompany(), express.getPrice(), 86400);
 
@@ -79,7 +79,7 @@ public class ExpressControllerApi {
             ParamCheckUtils.notAllNull(new Object[] { express.getId(), express.getProductId(), express.getDestion(), express.getCompany(), express.getPrice() },
                     new String[] { "Id", "ProductId", "Destion", "Company", "Price" });
 
-            this.expressService.updateById(express);
+            expressService.updateById(express);
 
             return ResponseMessage.success();
         }
@@ -132,7 +132,7 @@ public class ExpressControllerApi {
         try
         {
             ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
-            this.expressService.deleteById(id);
+            expressService.deleteById(id);
 
             return ResponseMessage.success();
         }

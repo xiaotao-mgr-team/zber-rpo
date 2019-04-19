@@ -9,6 +9,7 @@
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="delete_flag" jdbcType="INTEGER" property="delf" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+
     <result column="product_id" jdbcType="VARCHAR" property="productId" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="type" jdbcType="VARCHAR" property="type" />

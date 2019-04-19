@@ -15,7 +15,7 @@ public enum FileDomainEnum {
     ZBER_Q_PRODUCT("product/paotou-Q", "抛投器"),
     ZBER_YP_PRODUCT("product/qianshui-YP", "潜水用品"),
     ZBER_J_PRODUCT("product/daqi-J", "打气机"),
-    ZBER_HB_PRODUCT("product/hb", "救援三脚架"),
+    ZBER_HB_PRODUCT("product/hb", "轮转图片"),
     ZBER_SJJ_PRODUCT("product/jiuy-SJJ", "救援三脚架");
 
 

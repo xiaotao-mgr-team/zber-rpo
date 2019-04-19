@@ -17,9 +17,9 @@
         </commentGenerator>
         <!-- 配置数据库连接 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://114.215.46.146:3306/goods_dev?useUnicode=true&amp;characterEncoding=UTF-8"
-                        userId="xiaotao"
-                        password="Zhaobei+123" />
+                        connectionURL="jdbc:mysql://47.105.200.75:3306/krd?useUnicode=true&amp;characterEncoding=UTF-8"
+                        userId="root"
+                        password="sa123456" />
 
         <!-- 指定javaBean生成的位置 -->
         <javaModelGenerator targetPackage="com.wgs.domain" targetProject="src/main/java" >

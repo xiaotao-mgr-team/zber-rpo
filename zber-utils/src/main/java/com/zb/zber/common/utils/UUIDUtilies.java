@@ -22,7 +22,7 @@ public class UUIDUtilies {
 
     public static String uuid() {
         UUID uuid = UUID.randomUUID();
-        return uuid.toString();
+        return uuid.toString().substring(1,5);
     }
 
     public static String base64Uuid() {

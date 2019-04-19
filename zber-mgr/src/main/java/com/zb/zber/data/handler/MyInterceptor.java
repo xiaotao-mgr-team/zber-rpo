@@ -23,6 +23,7 @@ public class MyInterceptor implements HandlerInterceptor {
             response.sendRedirect(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath() + "/hlladmin/login");
             return false;
         }
+        response.addHeader("Access-Control-Allow-Origin", "*");
         return true;
     }
 

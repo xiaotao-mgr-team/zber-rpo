@@ -70,22 +70,27 @@
             <version>5.1.44</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.2</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.whalin</groupId>
             <artifactId>Memcached-Java-Client</artifactId>
             <version>3.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <finalName>zber-mgr</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

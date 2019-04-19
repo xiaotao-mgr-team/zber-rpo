@@ -10,6 +10,7 @@ import com.zb.zber.common.utils.FileUtilies;
 import com.zb.zber.common.utils.ParamCheckUtils;
 import com.zb.zber.common.web.comp.ace.ResponseMessage;
 import com.zb.zber.common.web.comp.ace.i18n.MessageResolver;
+import com.zb.zber.data.common.CommonUtils;
 import com.zb.zber.data.model.Customer;
 import com.zb.zber.data.model.IsPay;
 import com.zb.zber.data.model.Product;
@@ -31,6 +32,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cuixt on 2018/11/30.
@@ -48,37 +50,29 @@ public class OrderControllerApi {
     @Autowired
     private MemCachedClient memCachedClient;
 
-    public Customer CustomerFormat(Customer customer)
-    {
-        if(customer == null){
+    public Customer CustomerFormat(Customer customer) {
+        if (customer == null) {
             return null;
         }
-        try
-        {
+        try {
             if (StringUtils.isEmpty(customer.getOrderDateStr())) {
                 customer.setOrderDate(new Date());
             } else {
                 customer.setOrderDate(DatetimeUtilies.parse("yyyy-MM-dd", customer.getOrderDateStr()));
             }
-        }
-        catch (ParseException e)
-        {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-        if ((customer.getIsGetTicket() == null) || (customer.getIsGetTicket().booleanValue()))
-        {
+        if ((customer.getIsGetTicket() == null) || (customer.getIsGetTicket().booleanValue())) {
             customer.setIsGetTicket(Boolean.valueOf(true));
             customer.setTickType("");
             customer.setTickMoney(0D);
             customer.setTickExpense(0D);
         } else {
-            try
-            {
-                ParamCheckUtils.notAllNull(new Object[] { customer.getTickType(), customer.getSellPrice() },
-                        new String[] { "TickType", "SellPrice" });
-            }
-            catch (BusinessException e)
-            {
+            try {
+                ParamCheckUtils.notAllNull(new Object[]{customer.getTickType(), customer.getSellPrice()},
+                        new String[]{"TickType", "SellPrice"});
+            } catch (BusinessException e) {
                 e.printStackTrace();
             }
             if ("5P".equals(customer.getTickType().toUpperCase())) {
@@ -94,16 +88,16 @@ public class OrderControllerApi {
             customer.setIsPay(Boolean.valueOf(false));
         }
 
-        if (customer.getIsUseModule() !=null && !customer.getIsUseModule().booleanValue()) {
+        if (customer.getIsUseModule() != null && !customer.getIsUseModule().booleanValue()) {
             // todo 是否使用运费模板
         }
 
         Double totolMoney = customer.getTickExpense().doubleValue(); //初始化成发票的价格
         totolMoney = totolMoney + customer.getExpense().intValue();  //加运费的价格
 
-        if(customer.getSellPrice() == null){
+        if (customer.getSellPrice() == null) {
             totolMoney = customer.getUnitPrice().intValue() * customer.getNumber().intValue() + totolMoney;
-        }else{
+        } else {
             totolMoney = totolMoney + customer.getSellPrice().intValue();
         }
 
@@ -111,97 +105,96 @@ public class OrderControllerApi {
         return customer;
     }
 
-    @RequestMapping(value={"/add"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    @RequestMapping(value = {"/add"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage addCustomer(Customer customer, HttpServletRequest request, HttpServletResponse response)
-    {
-        try
-        {
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            ParamCheckUtils.notAllNull(new Object[] { customer.getProduct(), customer.getNumber(), customer.getOrderDateStr()},
-                    new String[] { "Product", "Number", "OrderDate" });
+    public ResponseMessage addCustomer(Customer customer, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ParamCheckUtils.notAllNull(new Object[]{customer.getProduct(), customer.getNumber(), customer.getOrderDateStr()},
+                    new String[]{"Product", "Number", "OrderDate"});
 
             this.customerService.addCustomer(CustomerFormat(customer));
             return ResponseMessage.success();
-        }
-        catch (BusinessException e)
-        {
+        } catch (BusinessException e) {
             logger.warn("customer.add error!", e);
-            return ResponseMessage.error((String)e.getValue(),
-                    MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+            return ResponseMessage.error((String) e.getValue(),
+                    MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
     }
 
-    @RequestMapping(value={"/batchadd"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    /**
+     * 批量处理
+     *
+     * @param address
+     * @param dataStr
+     * @param request
+     * @param response
+     * @return
+     * @throws ParseException
+     */
+    @RequestMapping(value = {"/batchadd"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage batchProduct(String address, String productId, String dataStr, HttpServletRequest request, HttpServletResponse response)
-            throws ParseException
-    {
-        try
-        {
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            ParamCheckUtils.checkNotAllNull(new Object[] { address, productId });
-
+    public ResponseMessage batchProduct(String address, String dataStr, HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        try {
+            // 一个用户订购多个产品
+            ParamCheckUtils.checkNotAllNull(new Object[]{address});
             String[] splits = address.split("\n");
-            for (int i = 0; i < splits.length; i++)
-            {
+            for (int i = 0; i < splits.length; i++) {
+
+                List<String> products = CommonUtils.getProductList(splits[0]); //获取用户的数据
+                Map<String,String> maps = CommonUtils.getTicket(splits[0]);
+
+                if(CollectionUtils.isEmpty(products)){
+                    continue;
+                }
+
+                for(String product:products){
+                    //todo 获取产品Id
+                }
+
                 Customer customer = new Customer();
                 customer.setAddress(splits[i]);
-                customer.setSellPrice((Integer)memCachedClient.get("PRODUCT_UNIT_PRICE_" + productId));
-                customer.setProduct(productId);
+//                customer.setSellPrice((Integer)memCachedClient.get("PRODUCT_UNIT_PRICE_" + productId));
+//                customer.setProduct(productId);
                 customer.setIsUseModule(Boolean.valueOf(false));
                 customer.setDestion("23");
                 customer.setExpense(Integer.valueOf(10));
                 customer.setNumber(Integer.valueOf(1));
-                customer.setExpressType("3");
-                if (StringUtils.isNotEmpty(dataStr))
-                {
+                customer.setExpressType("0");
+                if (StringUtils.isNotEmpty(dataStr)) {
                     customer.setOrderDate(DatetimeUtilies.parse("yyyy-MM-dd", dataStr));
                     customer.setOrderDateStr(dataStr);
-                }
-                else
-                {
+                } else {
                     customer.setOrderDateStr(dataStr);
                     customer.setOrderDate(new Date());
                 }
                 this.customerService.addCustomer(CustomerFormat(customer));
             }
             return ResponseMessage.success();
-        }
-        catch (BusinessException e)
-        {
-            return ResponseMessage.error((String)e.getValue(), MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+        } catch (BusinessException e) {
+            return ResponseMessage.error((String) e.getValue(), MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
     }
 
-    @RequestMapping(value={"/update"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    @RequestMapping(value = {"/update"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage updateCustomer(Customer customer, HttpServletRequest request, HttpServletResponse response)
-    {
-        try
-        {
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            ParamCheckUtils.notAllNull(new Object[] { customer.getId(), customer.getAddress(), customer.getProduct() },
-                    new String[] { "ID", "Address", "Product" });
+    public ResponseMessage updateCustomer(Customer customer, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ParamCheckUtils.notAllNull(new Object[]{customer.getId(), customer.getAddress(), customer.getProduct()},
+                    new String[]{"ID", "Address", "Product"});
 
             this.customerService.updateById(CustomerFormat(customer));
             return ResponseMessage.success();
-        }
-        catch (BusinessException e)
-        {
+        } catch (BusinessException e) {
             logger.warn("api.customer.update. error!", e);
-            return ResponseMessage.error((String)e.getValue(), MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+            return ResponseMessage.error((String) e.getValue(), MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
     }
 
-    @RequestMapping(value={"/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/list"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseMessage listCustomer(PaginationOrdersList<Customer> page, String startDate, String endDate, HttpServletRequest request, HttpServletResponse response)
-            throws ParseException
-    {
-        try
-        {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            throws ParseException {
+        try {
             Date startDt = new Date();
             Date endDt = new Date();
             if (StringUtils.isNotEmpty(startDate)) {
@@ -216,19 +209,15 @@ public class OrderControllerApi {
             }
             page = this.customerService.listCustomer(page, startDt, endDt);
             return ResponseMessage.success(page);
-        }
-        catch (BusinessException e)
-        {
+        } catch (BusinessException e) {
             logger.warn("api.customer.list. error!", e);
-            return ResponseMessage.error((String)e.getValue(), MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+            return ResponseMessage.error((String) e.getValue(), MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
     }
 
-    @RequestMapping(value={"/list-payType"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/list-payType"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listIsDaofu(HttpServletRequest request, HttpServletResponse response)
-    {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+    public ResponseMessage listIsDaofu(HttpServletRequest request, HttpServletResponse response) {
         IsPay isPay = null;
         List<IsPay> isPaylist = Lists.newArrayList();
         isPay = new IsPay();
@@ -245,53 +234,40 @@ public class OrderControllerApi {
         return ResponseMessage.success(isPaylist);
     }
 
-    @RequestMapping(value={"/detail"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/detail"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage getCustomerDetail(String id, HttpServletRequest request, HttpServletResponse response)
-    {
-        try
-        {
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
+    public ResponseMessage getCustomerDetail(String id, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
 
             Customer customer = this.customerService.selectById(id);
 
             return ResponseMessage.success(customer);
-        }
-        catch (BusinessException e)
-        {
+        } catch (BusinessException e) {
             logger.warn("api.customer.detail error!", e);
-            return ResponseMessage.error((String)e.getValue(),
-                    MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+            return ResponseMessage.error((String) e.getValue(),
+                    MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
     }
 
-    @RequestMapping(value={"/delete"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/delete"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage deleteProduct(String id, HttpServletRequest request, HttpServletResponse response)
-    {
-        try
-        {
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
+    public ResponseMessage deleteProduct(String id, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
             this.customerService.deleteById(id);
 
             return ResponseMessage.success();
-        }
-        catch (BusinessException e)
-        {
+        } catch (BusinessException e) {
             logger.warn("api.customer.delete. error!", e);
-            return ResponseMessage.error((String)e.getValue(), MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
+            return ResponseMessage.error((String) e.getValue(), MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
     }
 
-    @RequestMapping(value={"/export-by-time"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/export-by-time"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage exportOrder(String startDate, String endDate, HttpServletRequest request, HttpServletResponse response)
-    {
-        try
-        {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+    public ResponseMessage exportOrder(String startDate, String endDate, HttpServletRequest request, HttpServletResponse response) {
+        try {
             response.setContentType("application/vnd.ms-excel");
             String userAgent = request.getHeader("User-Agent");
             response.setHeader("content-disposition", "attachment;filename=" + FileUtilies.getDownloadEncodeFileName("订单表", userAgent) + ".xls");
@@ -317,15 +293,15 @@ public class OrderControllerApi {
             List<ExcelExportUtilies.ExcelHeaderCell> headerCellList = new ArrayList();
             ExcelExportUtilies.ExcelHeaderCell excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("序号", ExcelExportUtilies.ExcelDirection.CENTER, null, true, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购日期", ExcelExportUtilies.ExcelDirection.CENTER, "orderDate", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("用户地址", ExcelExportUtilies.ExcelDirection.CENTER, "address", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购产品", ExcelExportUtilies.ExcelDirection.CENTER, "productName", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购产品", ExcelExportUtilies.ExcelDirection.CENTER, "name", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("单价", ExcelExportUtilies.ExcelDirection.CENTER, "unitPrice", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("购买数量", ExcelExportUtilies.ExcelDirection.CENTER, "number", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("快递", ExcelExportUtilies.ExcelDirection.CENTER, "expressName", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("运费", ExcelExportUtilies.ExcelDirection.CENTER, "expense", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
@@ -333,26 +309,22 @@ public class OrderControllerApi {
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票类型", ExcelExportUtilies.ExcelDirection.CENTER, "tickType", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票费用", ExcelExportUtilies.ExcelDirection.CENTER, "tickMoney", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票费用", ExcelExportUtilies.ExcelDirection.CENTER, "tickExpense", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("总费用", ExcelExportUtilies.ExcelDirection.CENTER, "sumMoney", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("是否到付", ExcelExportUtilies.ExcelDirection.CENTER, "isPayStr", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购日期", ExcelExportUtilies.ExcelDirection.CENTER, "orderDate", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
             excelHeaderCell.setFormatDate("yyyy-MM-dd");
-            if (!CollectionUtils.isEmpty(page.getDatas())) {
-                ExcelExportUtilies.export(startDt, endDt, "订单表", os, page.getDatas(), headerCellList);
+            List<Customer> lists = page.getDatas();
+            if (!CollectionUtils.isEmpty(lists)) {
+                for (Customer c : lists) {
+                    c.setAddress(c.getAddress().substring(0, 10));
+                }
+                ExcelExportUtilies.export(startDt, endDt, "订单表", os, lists, headerCellList);
             }
             return ResponseMessage.success();
-        }
-        catch (BusinessException e)
-        {
-            return ResponseMessage.error((String)e.getValue(), MessageResolver.getMessage(request, (String)e.getValue(), e.getPlaceholders()));
-        }
-        catch (Exception e)
-        {
+        } catch (BusinessException e) {
+            return ResponseMessage.error((String) e.getValue(), MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

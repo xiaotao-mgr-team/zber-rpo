@@ -34,7 +34,7 @@ public class HeOrderControllerApi {
     @ResponseBody
     public ResponseMessage addHeOrder( HeOrder heOrder, HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            //response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{heOrder.getAddress(), heOrder.getProduct()},
                     new String[]{"Address", "Product"});
             heOrderService.insert(heOrder);
@@ -50,7 +50,7 @@ public class HeOrderControllerApi {
     @ResponseBody
     public ResponseMessage delete(String id, HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            //response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
             this.heOrderService.deleteById(id);
             return ResponseMessage.success();
@@ -64,7 +64,7 @@ public class HeOrderControllerApi {
     @ResponseBody
     public ResponseMessage updateExpress( HeOrder heOrder, HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            //response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{heOrder.getId()}, new String[]{"Id"});
 
             this.heOrderService.update(heOrder);
@@ -79,7 +79,7 @@ public class HeOrderControllerApi {
     @RequestMapping(value = {"/list"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseMessage listHeOrder(PaginationOrdersList<HeOrder> page, HeOrder heOrder, HttpServletRequest request, HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        //response.addHeader("Access-Control-Allow-Origin", "*");
         page = this.heOrderService.selectList(page, heOrder);
         return ResponseMessage.success(page);
     }
@@ -88,7 +88,7 @@ public class HeOrderControllerApi {
     @ResponseBody
     public ResponseMessage getDetail(@ModelAttribute String id, HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            //response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
             HeOrder heOrder = this.heOrderService.selectById(id);
 

@@ -25,5 +25,4 @@ public interface IProductDao {
     Product selectById(String paramString);
 
     List<ProductType> getProductType(ProductType paramProductType);
-
 }

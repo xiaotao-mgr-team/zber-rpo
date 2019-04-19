@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RequestMapping({"/product"})
@@ -25,10 +26,11 @@ public class ProductControllerApi {
 
     @RequestMapping(value={"/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listProductType(ProductType productType, HttpServletRequest request)
+    public ResponseMessage listProductType(ProductType productType, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             List<ProductType> productTypeList = productService.listProductByType(productType);
 
             return ResponseMessage.success(productTypeList);

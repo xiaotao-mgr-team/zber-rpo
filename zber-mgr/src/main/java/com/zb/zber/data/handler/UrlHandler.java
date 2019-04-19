@@ -54,8 +54,8 @@ public class UrlHandler {
     {
         try
         {
-            String tempPath = (String) RootConfigInitor.PARAMS.get("file.root.upload.temp.path", "http://www.zbering.com/data/temp/img/");
-            String normalPath = (String)RootConfigInitor.PARAMS.get("file.root.upload.formal.path", "http://www.zbering.com/data/formal/img/");
+            String tempPath = (String) RootConfigInitor.PARAMS.get("file.root.upload.temp.path", "http://mgr.zbering.com/data/temp/img/");
+            String normalPath = (String)RootConfigInitor.PARAMS.get("file.root.upload.formal.path", "http://mgr.zbering.com/data/formal/img/");
             normalPath = normalPath + "/" + type;
             tempPath = tempPath + "/" + type;
             normalPath = normalPath + "/" + urlCode;

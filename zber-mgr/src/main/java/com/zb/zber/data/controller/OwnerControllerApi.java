@@ -31,7 +31,7 @@ public class OwnerControllerApi {
     @RequestMapping(value = {"/list-page"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseMessage listOwnerPage(Owner owner, PaginationOrdersList<Owner> page, HttpServletRequest request, HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        //response.addHeader("Access-Control-Allow-Origin", "*");
         page = this.ownerService.listOwner(page, owner);
         return ResponseMessage.success(page);
     }
@@ -39,7 +39,7 @@ public class OwnerControllerApi {
     @RequestMapping(value = {"/list"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseMessage listOwner(Owner owner, HttpServletRequest request, HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        //response.addHeader("Access-Control-Allow-Origin", "*");
         List<Owner> ownerList = this.ownerService.selectList(owner);
         return ResponseMessage.success(ownerList);
     }
@@ -48,7 +48,7 @@ public class OwnerControllerApi {
     @ResponseBody
     public ResponseMessage addOwner(Owner owner, HttpServletRequest request, HttpServletResponse response) throws BusinessException {
         try {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+            //response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{owner.getName()}, new String[]{"name"});
             this.ownerService.insert(owner);
             return ResponseMessage.success();
@@ -81,7 +81,7 @@ public class OwnerControllerApi {
     @ResponseBody
     public ResponseMessage deleteOwner(String id, HttpServletRequest request, HttpServletResponse response) {
         {
-            response.addHeader("Access-Control-Allow-Origin", "*");
+//            response.addHeader("Access-Control-Allow-Origin", "*");
             if (StringUtils.isNotEmpty(id)) {
                 this.ownerService.deleteById(id);
             }

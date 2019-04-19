@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 企业介绍
@@ -28,7 +29,8 @@ public class IntordController {
 
     @RequestMapping(value = {"/detail"}, produces = {"application/json"}, method = {RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage getDetail(String id,HttpServletRequest request){
+    public ResponseMessage getDetail(String id,HttpServletRequest request, HttpServletResponse response){
+        response.addHeader("Access-Control-Allow-Origin", "*");
         Intord intord = intordService.selectById(id);
         return ResponseMessage.success(intord);
     }

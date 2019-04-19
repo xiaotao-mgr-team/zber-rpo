@@ -5,6 +5,7 @@ package com.zb.zber.data.controller;
  */
 
 import com.zb.zber.common.core.exception.BusinessException;
+import com.zb.zber.common.utils.EncryptUtils;
 import com.zb.zber.common.utils.ParamCheckUtils;
 import com.zb.zber.common.web.comp.ace.ResponseMessage;
 import com.zb.zber.common.web.comp.ace.i18n.MessageResolver;
@@ -36,7 +37,6 @@ public class AdminControllerApi {
     {
         try
         {
-            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { admin.getName(), admin.getPassword() },
                     new String[] { "name", "password" });
 
@@ -50,20 +50,6 @@ public class AdminControllerApi {
             }
 
             return ResponseMessage.success(admin);
-
-
-//            DefaultIdentity userIdentity = new DefaultIdentity();
-//            userIdentity.setId(admin.getId());
-//            userIdentity.put("user", admin);
-//
-//            WebContextHandler.setSidToCookie(response, admin.getId(), "/");
-//            WebContextHandler.setSTimeToCookie(response, DatetimeUtilies.formatDateTime("yyyy-MM-dd HH:mm:ss", new Date()), "/");
-//            if (StringUtils.isNotEmpty(admin.getName())) {
-//                WebContextHandler.setUserNameToCookie(response, admin.getName(), "/");
-//            }
-//            WebContextHandler.setSessionIdentity(userIdentity);
-////            HttpSession session = request.getSession();
-////            session.getAttribute()
         }
         catch (BusinessException e) {
             logger.warn("api.service-user.login. error!", e);
@@ -77,5 +63,9 @@ public class AdminControllerApi {
     {
         request.getSession().invalidate();
         return ResponseMessage.success();
+    }
+
+    public static void main(String[] args){
+        System.out.println(EncryptUtils.MD5Encode("123456"));
     }
 }

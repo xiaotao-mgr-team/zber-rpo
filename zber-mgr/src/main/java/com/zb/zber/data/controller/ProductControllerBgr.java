@@ -43,6 +43,7 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             page = productService.listProductType(page, productType);
             return ResponseMessage.success(page);
         }
@@ -59,6 +60,7 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { product.getTypeId(), product.getIntroduce(), product.getPrice(), product.getTitle() },
                     new String[] { "TypeId", "Introduce", "Price", "Title" });
 
@@ -88,6 +90,7 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { product.getId(), product.getTypeId(), product.getIntroduce(), product.getPrice(), product.getTitle() },
                     new String[] { "Id", "TypeId", "Introduce", "Price", "Title" });
 
@@ -112,6 +115,7 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             page = this.productService.listProduct(page, product);
             return ResponseMessage.success(page);
         }
@@ -136,6 +140,7 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             page = this.productService.listAllProduct(page, product);
             if ((page != null) && (page.getDatas() != null) && (page.getDatas().size() > 0)) {
                 for (Product pt : page.getDatas()) {
@@ -155,6 +160,7 @@ public class ProductControllerBgr {
     @ResponseBody
     public ResponseMessage hbList(HttpServletRequest request, HttpServletResponse response)
     {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         List<String> hbList = Lists.newArrayList();
         String prox = FileDomainEnum.ZBER_HB_PRODUCT.getCode();
         hbList.add(UrlHandler.getImageUrlWithOutSuffix("first.jpg", prox));
@@ -189,6 +195,7 @@ public class ProductControllerBgr {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
             this.productService.deleteById(id);
 

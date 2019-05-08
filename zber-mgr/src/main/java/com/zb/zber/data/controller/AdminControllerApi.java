@@ -37,6 +37,7 @@ public class AdminControllerApi {
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { admin.getName(), admin.getPassword() },
                     new String[] { "name", "password" });
 
@@ -61,6 +62,7 @@ public class AdminControllerApi {
     @ResponseBody
     public ResponseMessage adminLogot(HttpServletRequest request, HttpServletResponse response)
     {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         request.getSession().invalidate();
         return ResponseMessage.success();
     }

@@ -70,15 +70,15 @@ public class OrderControllerApi {
             customer.setTickExpense(0D);
         } else {
             try {
-                ParamCheckUtils.notAllNull(new Object[]{customer.getTickType(), customer.getSellPrice()},
-                        new String[]{"TickType", "SellPrice"});
+                ParamCheckUtils.notAllNull(new Object[]{customer.getTickType(), customer.getTickMoney()},
+                        new String[]{"TickType", "TickMoney"});
             } catch (BusinessException e) {
                 e.printStackTrace();
             }
             if ("5P".equals(customer.getTickType().toUpperCase())) {
                 customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.03D));
             } else {
-                customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.1D));
+                customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.09D));
             }
         }
         Product product = productService.selectById(customer.getProduct());
@@ -109,6 +109,7 @@ public class OrderControllerApi {
     @ResponseBody
     public ResponseMessage addCustomer(Customer customer, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{customer.getProduct(), customer.getNumber(), customer.getOrderDateStr()},
                     new String[]{"Product", "Number", "OrderDate"});
 
@@ -136,6 +137,7 @@ public class OrderControllerApi {
     public ResponseMessage batchProduct(String address, String dataStr, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
             // 一个用户订购多个产品
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.checkNotAllNull(new Object[]{address});
             String[] splits = address.split("\n");
             for (int i = 0; i < splits.length; i++) {
@@ -179,6 +181,7 @@ public class OrderControllerApi {
     @ResponseBody
     public ResponseMessage updateCustomer(Customer customer, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{customer.getId(), customer.getAddress(), customer.getProduct()},
                     new String[]{"ID", "Address", "Product"});
 
@@ -195,6 +198,7 @@ public class OrderControllerApi {
     public ResponseMessage listCustomer(PaginationOrdersList<Customer> page, String startDate, String endDate, HttpServletRequest request, HttpServletResponse response)
             throws ParseException {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             Date startDt = new Date();
             Date endDt = new Date();
             if (StringUtils.isNotEmpty(startDate)) {
@@ -218,6 +222,7 @@ public class OrderControllerApi {
     @RequestMapping(value = {"/list-payType"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseMessage listIsDaofu(HttpServletRequest request, HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         IsPay isPay = null;
         List<IsPay> isPaylist = Lists.newArrayList();
         isPay = new IsPay();
@@ -238,6 +243,7 @@ public class OrderControllerApi {
     @ResponseBody
     public ResponseMessage getCustomerDetail(String id, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
 
             Customer customer = this.customerService.selectById(id);
@@ -254,6 +260,7 @@ public class OrderControllerApi {
     @ResponseBody
     public ResponseMessage deleteProduct(String id, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{id}, new String[]{"id"});
             this.customerService.deleteById(id);
 
@@ -268,6 +275,7 @@ public class OrderControllerApi {
     @ResponseBody
     public ResponseMessage exportOrder(String startDate, String endDate, HttpServletRequest request, HttpServletResponse response) {
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             response.setContentType("application/vnd.ms-excel");
             String userAgent = request.getHeader("User-Agent");
             response.setHeader("content-disposition", "attachment;filename=" + FileUtilies.getDownloadEncodeFileName("订单表", userAgent) + ".xls");

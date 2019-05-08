@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by cuixt on 2018/8/2.
@@ -39,8 +40,9 @@ public class ExpressControllerApi {
 
     @RequestMapping(value={"/type/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listExpressType(ExpressType expressType, PaginationOrdersList<ExpressType> page, HttpServletRequest request)
+    public ResponseMessage listExpressType(ExpressType expressType, PaginationOrdersList<ExpressType> page, HttpServletResponse response)
     {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         page = sTypeService.listExpressType(page, expressType);
 
         return ResponseMessage.success(page);
@@ -48,10 +50,11 @@ public class ExpressControllerApi {
 
     @RequestMapping(value={"/add"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage addExpress(Express express, HttpServletRequest request)
+    public ResponseMessage addExpress(Express express, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { express.getProductId(), express.getDestion(), express.getCompany(), express.getPrice() },
                     new String[] { "ProductId", "Destion", "Company", "Price" });
 
@@ -72,10 +75,11 @@ public class ExpressControllerApi {
 
     @RequestMapping(value={"/update"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage updateExpress(Express express, HttpServletRequest request)
+    public ResponseMessage updateExpress(Express express, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { express.getId(), express.getProductId(), express.getDestion(), express.getCompany(), express.getPrice() },
                     new String[] { "Id", "ProductId", "Destion", "Company", "Price" });
 
@@ -92,10 +96,11 @@ public class ExpressControllerApi {
 
     @RequestMapping(value={"/list"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage listExpress(PaginationOrdersList<Express> page, Express express, HttpServletRequest request)
+    public ResponseMessage listExpress(PaginationOrdersList<Express> page, Express express, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             page = this.expressService.listExpress(page, express);
 
             return ResponseMessage.success(page);
@@ -109,10 +114,11 @@ public class ExpressControllerApi {
 
     @RequestMapping(value={"/detail"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage getExpressDetail(String id, HttpServletRequest request)
+    public ResponseMessage getExpressDetail(String id, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
             Express express = this.expressService.selectById(id);
 
@@ -127,10 +133,11 @@ public class ExpressControllerApi {
 
     @RequestMapping(value={"/delete"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage deleteProduct(String id, HttpServletRequest request)
+    public ResponseMessage deleteProduct(String id, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
             expressService.deleteById(id);
 

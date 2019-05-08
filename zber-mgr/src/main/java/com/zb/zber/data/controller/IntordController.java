@@ -37,8 +37,9 @@ public class IntordController {
 
     @RequestMapping(value = {"/update"}, produces = {"application/json"}, method = {RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage updateById(HttpServletRequest request,@RequestBody Intord intord){
+    public ResponseMessage updateById(HttpServletRequest request,@RequestBody Intord intord, HttpServletResponse response){
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{intord.getId()}, new String[]{"ID"});
             intordService.updateById(intord);
             return ResponseMessage.success();

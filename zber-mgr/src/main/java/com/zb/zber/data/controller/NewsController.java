@@ -46,8 +46,9 @@ public class NewsController {
      */
     @RequestMapping(value={"/add"},produces = {"application/json"},method = RequestMethod.POST)
     @ResponseBody
-    public ResponseMessage addNews( News news,HttpServletRequest request){
+    public ResponseMessage addNews( News news,HttpServletRequest request, HttpServletResponse response){
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{news.getName(),news.getTitle(),news.getAuthor(),news.getContent(),news.getStatus(),news.getTopic()},
                     new String[]{"name","title","author","content","status","topic"});
             iNewService.insert(news);
@@ -65,8 +66,9 @@ public class NewsController {
      */
     @RequestMapping(value={"/update"},produces = {"application/json"},method = RequestMethod.POST)
     @ResponseBody
-    public ResponseMessage updateNews(@RequestBody News news,HttpServletRequest request){
+    public ResponseMessage updateNews(@RequestBody News news,HttpServletRequest request, HttpServletResponse response){
         try {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[]{news.getId(),news.getName(),news.getTitle(),news.getAuthor(),news.getContent(),news.getStatus(),news.getTopic()},
                     new String[]{"ID","name","title","author","content","status","topic"});
             iNewService.updateById(news);
@@ -78,10 +80,11 @@ public class NewsController {
 
     @RequestMapping(value={"/detail/{id}"}, produces={"application/json"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    public ResponseMessage getProductDetail(@PathVariable String id, HttpServletRequest request)
+    public ResponseMessage getProductDetail(@PathVariable String id, HttpServletRequest request, HttpServletResponse response)
     {
         try
         {
+            response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.notAllNull(new Object[] { id }, new String[] { "id" });
             News news = iNewService.selectById(id);
 

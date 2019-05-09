@@ -289,13 +289,9 @@ public class OrderControllerApi {
             Date endDt = new Date();
             if (StringUtils.isNotEmpty(startDate)) {
                 startDt = DatetimeUtilies.parse("yyyy-MM-dd", startDate);
-            } else {
-                startDt = null;
             }
             if (StringUtils.isNotEmpty(startDate)) {
                 endDt = DatetimeUtilies.parse("yyyy-MM-dd", endDate);
-            } else {
-                endDt = null;
             }
             PaginationOrdersList<Customer> page = new PaginationOrdersList();
             page.getPagination().setCurrentPage(1);
@@ -305,7 +301,7 @@ public class OrderControllerApi {
             List<ExcelExportUtilies.ExcelHeaderCell> headerCellList = new ArrayList();
             ExcelExportUtilies.ExcelHeaderCell excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("序号", ExcelExportUtilies.ExcelDirection.CENTER, null, true, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购日期", ExcelExportUtilies.ExcelDirection.CENTER, "orderDate", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购日期", ExcelExportUtilies.ExcelDirection.CENTER, "orderDateStr", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("用户地址", ExcelExportUtilies.ExcelDirection.CENTER, "address", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
@@ -328,10 +324,10 @@ public class OrderControllerApi {
             excelHeaderCell.setFormatDate("yyyy-MM-dd");
             List<Customer> lists = page.getDatas();
             if (!CollectionUtils.isEmpty(lists)) {
-                for (Customer c : lists) {
-                    c.setAddress(c.getAddress().substring(0, 10));
-                }
-                ExcelExportUtilies.export(startDt, endDt, "订单表", os, lists, headerCellList);
+//                for (Customer c : lists) {
+//                    c.setAddress(c.getDestion());
+//                }
+                ExcelExportUtilies.export(startDt, endDt, "订单结算表", os, lists, headerCellList);
             }
             return ResponseMessage.success();
         } catch (BusinessException e) {

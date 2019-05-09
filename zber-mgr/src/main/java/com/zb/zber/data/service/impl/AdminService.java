@@ -38,7 +38,7 @@ public class AdminService implements IAdminService {
     }
 
     public static void main(String[] args) {
-        System.out.println(EncryptUtils.MD5Encode("123456"));
+        System.out.println(EncryptUtils.MD5Encode("Zhaobei+123"));
     }
 
 }

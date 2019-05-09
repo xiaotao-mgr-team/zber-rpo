@@ -38,6 +38,7 @@ public class Customer extends EntityObject {
     private String tickTypeStr;
     private String tickMoneyStr;
     private String tickExpenseStr;
+    private Double extendMoney;
 
 
     //==额外展示属性
@@ -356,5 +357,13 @@ public class Customer extends EntityObject {
 
     public void setTickExpense(Double tickExpense) {
         this.tickExpense = tickExpense;
+    }
+
+    public Double getExtendMoney() {
+        return extendMoney;
+    }
+
+    public void setExtendMoney(Double extendMoney) {
+        this.extendMoney = extendMoney;
     }
 }

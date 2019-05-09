@@ -9,7 +9,6 @@ import com.zb.zber.data.model.Customer;
 import com.zb.zber.data.model.Pay;
 import com.zb.zber.data.service.ICustomerSerive;
 import com.zb.zber.data.service.IPayService;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,15 +61,17 @@ public class PayControllerApi {
     public ResponseMessage addPayCheck(String startDate, String endDate,HttpServletRequest request, HttpServletResponse response) {
         try {
             response.addHeader("Access-Control-Allow-Origin", "*");
-            List<String> times  = DatetimeUtilies.getBetweenDates(DatetimeUtilies.parse(DatetimeUtilies.DATE,startDate),DatetimeUtilies.parse(DatetimeUtilies.DATE,endDate));
-            if(CollectionUtils.isNotEmpty(times)){
-                for(String str:times){
-                    payService.deleteByDate(str);
-                    PayCheck(str);
-                }
-            }
+            payService.deleteByDate(startDate);
+            PayCheck(startDate);
+//            List<String> times  = DatetimeUtilies.getBetweenDates(DatetimeUtilies.parse(DatetimeUtilies.DATE,startDate),DatetimeUtilies.parse(DatetimeUtilies.DATE,endDate));
+//            if(CollectionUtils.isNotEmpty(times)){
+//                for(String str:times){
+//                    payService.deleteByDate(str);
+//                    PayCheck(str);
+//                }
+//            }
             return ResponseMessage.success();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             return ResponseMessage.error(e.getMessage(),  MessageResolver.getMessage(request, (String)e.getMessage()));
         }
     }

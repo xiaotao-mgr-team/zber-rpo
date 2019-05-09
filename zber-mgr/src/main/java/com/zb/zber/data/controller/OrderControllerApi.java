@@ -91,14 +91,18 @@ public class OrderControllerApi {
         if (customer.getIsUseModule() != null && !customer.getIsUseModule().booleanValue()) {
             // todo 是否使用运费模板
         }
-
+        Double extendMoney = customer.getExtendMoney() == null?0:customer.getExtendMoney();
         Double totolMoney = customer.getTickExpense().doubleValue(); //初始化成发票的价格
-        totolMoney = totolMoney + customer.getExpense().intValue();  //加运费的价格
+        totolMoney = totolMoney + customer.getExpense().intValue() + extendMoney;  //加运费的价格
 
         if (customer.getSellPrice() == null) {
             totolMoney = customer.getUnitPrice().intValue() * customer.getNumber().intValue() + totolMoney;
         } else {
-            totolMoney = totolMoney + customer.getSellPrice().intValue();
+            return null;
+        }
+
+        if(StringUtils.isNotBlank(customer.getAddress())){
+            customer.setDestion(customer.getAddress().substring(0,20));
         }
 
         customer.setSumMoney(totolMoney);
@@ -143,13 +147,13 @@ public class OrderControllerApi {
             for (int i = 0; i < splits.length; i++) {
 
                 List<String> products = CommonUtils.getProductList(splits[0]); //获取用户的数据
-                Map<String,String> maps = CommonUtils.getTicket(splits[0]);
+                Map<String, String> maps = CommonUtils.getTicket(splits[0]);
 
-                if(CollectionUtils.isEmpty(products)){
+                if (CollectionUtils.isEmpty(products)) {
                     continue;
                 }
 
-                for(String product:products){
+                for (String product : products) {
                     //todo 获取产品Id
                 }
 

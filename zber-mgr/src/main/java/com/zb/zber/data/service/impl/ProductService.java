@@ -83,4 +83,13 @@ public class ProductService implements IProductService {
         return productTypeMapper.queryProductType(id);
     }
 
+    @Override
+    public String selectByName(String title) {
+       Product product =  productMapper.selectByName(title);
+       if(product != null){
+           return product.getId();
+       }
+       return null;
+    }
+
 }

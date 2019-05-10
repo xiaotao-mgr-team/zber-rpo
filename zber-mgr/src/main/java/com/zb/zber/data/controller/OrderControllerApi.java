@@ -75,7 +75,7 @@ public class OrderControllerApi {
             } catch (BusinessException e) {
                 e.printStackTrace();
             }
-            if ("5P".equals(customer.getTickType().toUpperCase())) {
+            if ("5P".equals(customer.getTickType().toUpperCase()) || customer.getTickType().contains("普")) {
                 customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.03D));
             } else {
                 customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.09D));
@@ -141,38 +141,61 @@ public class OrderControllerApi {
     public ResponseMessage batchProduct(String address, String dataStr, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
             // 一个用户订购多个产品
+
+            // address [address,phone][number,productName,remarks][发票类型,金额]
             response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.checkNotAllNull(new Object[]{address});
             String[] splits = address.split("\n");
             for (int i = 0; i < splits.length; i++) {
-
-                List<String> products = CommonUtils.getProductList(splits[0]); //获取用户的数据
-                Map<String, String> maps = CommonUtils.getTicket(splits[0]);
-
-                if (CollectionUtils.isEmpty(products)) {
+                Customer customer = new Customer();
+                if(StringUtils.isBlank(splits[i])){
+                    continue;
+                }
+                Map<String,String> tipsMaps = CommonUtils.getProductMaps(splits[i]); //获取用户的数据
+                if (tipsMaps.size() == 0) {
                     continue;
                 }
 
-                for (String product : products) {
-                    //todo 获取产品Id
+
+
+                String[] addds = tipsMaps.get("0").split(",");
+                String[] products = tipsMaps.get("1").split(",");
+                String remarks = CommonUtils.getRemarks(products[1]);
+                String productName = products[1].substring(0,products[1].length()-remarks.length());
+
+                String productId = productService.selectByName(productName);
+                if(productId == null){
+                    continue;
                 }
 
-                Customer customer = new Customer();
-                customer.setAddress(splits[i]);
-//                customer.setSellPrice((Integer)memCachedClient.get("PRODUCT_UNIT_PRICE_" + productId));
-//                customer.setProduct(productId);
-                customer.setIsUseModule(Boolean.valueOf(false));
-                customer.setDestion("23");
-                customer.setExpense(Integer.valueOf(10));
-                customer.setNumber(Integer.valueOf(1));
-                customer.setExpressType("0");
-                if (StringUtils.isNotEmpty(dataStr)) {
-                    customer.setOrderDate(DatetimeUtilies.parse("yyyy-MM-dd", dataStr));
-                    customer.setOrderDateStr(dataStr);
-                } else {
-                    customer.setOrderDateStr(dataStr);
-                    customer.setOrderDate(new Date());
+                String tickType = "";
+                Double tickMoney = 0.0D;
+
+                customer.setIsGetTicket(false);
+                if(StringUtils.isNotBlank(tipsMaps.get("2"))){
+                    String[] tickets = tipsMaps.get("2").split(",");
+                    tickType = tickets[0];
+                    tickMoney = Double.valueOf(tickets[1]);
+                    customer.setIsGetTicket(true);
+                    customer.setTickType(CommonUtils.getTicket(tickType));
+                    customer.setTickMoney(tickMoney);
                 }
+
+                customer.setAddress(addds[0]);
+                customer.setTel(StringUtils.isBlank(addds[1])?"00":addds[1]);
+                customer.setIsUseModule(Boolean.valueOf(false));
+                customer.setDestion(addds[0].substring(0,10));
+                //产品
+                customer.setExpense(Integer.valueOf(10));
+                customer.setNumber(Integer.parseInt(products[0].substring(0,1)));
+                customer.setProduct(productId);
+                customer.setExpressType("0");
+                customer.setIsGetTicket(false);
+                customer.setTickType(CommonUtils.getTicket(tickType));
+                customer.setTickMoney(tickMoney);
+                customer.setRemarks(remarks);
+                customer.setOrderDateStr(dataStr);
+
                 this.customerService.addCustomer(CustomerFormat(customer));
             }
             return ResponseMessage.success();

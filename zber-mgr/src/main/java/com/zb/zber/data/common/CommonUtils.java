@@ -1,6 +1,7 @@
 package com.zb.zber.data.common;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public abstract class CommonUtils {
         int start = 0;
         int startFlag = 0;
         int endFlag = 0;
+        int index = 0;
         for (int i = 0; i < msg.length(); i++) {
             if (msg.charAt(i) == '【') {
                 startFlag++;
@@ -36,34 +38,71 @@ public abstract class CommonUtils {
         return list;
     }
 
-    public static Map<String,String> getTicket(String msg){
+    public static Map<String,String> getProductMaps(String msg){
 
+        msg = msg.replace("[","【");
+        msg = msg.replace("]","】");
         Map<String,String> maps = Maps.newHashMap();
+
+        int start = 0;
+        int startFlag = 0;
+        int endFlag = 0;
+        int index = 0;
+        for (int i = 0; i < msg.length(); i++) {
+            if (msg.charAt(i) == '【') {
+                startFlag++;
+                if (startFlag == endFlag + 1) {
+                    start = i;
+                }
+            } else if (msg.charAt(i) == '】') {
+                endFlag++;
+                if (endFlag == startFlag) {
+                    maps.put(String.valueOf(index),msg.substring(start + 1, i));
+                    index ++;
+                }
+            }
+        }
+        return maps;
+    }
+
+    public static String getTicket(String msg){
+
+        if(StringUtils.isBlank(msg)){
+            return "";
+        }
+
+        String tickType  = "5P";
+        if(msg.contains("专票")){
+            tickType = "10P";
+        }
+        return tickType;
+    }
+
+    public static String getRemarks(String msg){
+
+        msg = msg.replace("（","(");
+        msg = msg.replace("）",")");
+
         int start = 0;
         int startFlag = 0;
         int endFlag = 0;
         String tickerInfo = "";
         for (int i = 0; i < msg.length(); i++) {
-            if (msg.charAt(i) == '{') {
+            if (msg.charAt(i) == '(') {
                 startFlag++;
                 if (startFlag == endFlag + 1) {
                     start = i;
                 }
-            } else if (msg.charAt(i) == '}') {
+            } else if (msg.charAt(i) == ')') {
                 endFlag++;
                 if (endFlag == startFlag) {
-                    tickerInfo = msg.substring(start + 1, i);
+                    tickerInfo =  msg.substring(start, i+1);
+                    break;
                 }
             }
         }
-        if(tickerInfo.contains("专票")){
-            getNumber(tickerInfo);
-            maps.put("10P",getNumber(tickerInfo));
-        }else{
-            getNumber(tickerInfo);
-            maps.put("3P",getNumber(tickerInfo));
-        }
-        return maps;
+
+        return tickerInfo;
     }
 
     public static String getNumber(String tickerInfo) {
@@ -73,6 +112,13 @@ public abstract class CommonUtils {
     }
 
     public static void main(String[] args) {
-        String msg = "湖南省邵阳市双清区 汽车站街道 东大路55号，胡进平， 18007397701【1台双人电动10米】【1台单人用风机（只有机器）】双开关 {开专票1655}";
+
+//        String msg = "【湖南省邵阳市双清区 汽车站街道 东大路55号 胡进平， 18007397701】【1台，单人用风机（只有机器双开关）】【专票，1655】";
+//
+//        getProductMaps(msg);
+
+        String mgs2 = "单人电动送风（只要机器，双开关）";
+
+        System.out.println(getRemarks(mgs2));
     }
 }

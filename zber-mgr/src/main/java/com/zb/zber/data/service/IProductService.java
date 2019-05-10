@@ -28,4 +28,6 @@ public interface IProductService {
     PaginationOrdersList<ProductType> listProductType(PaginationOrdersList<ProductType> paramPaginationOrdersList, ProductType paramProductType) throws BusinessException;
 
     ProductType queryProductType(String paramString);
+
+    String selectByName(String title);
 }

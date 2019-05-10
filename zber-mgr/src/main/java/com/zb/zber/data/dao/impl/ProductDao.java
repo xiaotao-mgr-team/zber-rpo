@@ -51,4 +51,9 @@ public class ProductDao extends SuperDao implements IProductDao {
     public List<ProductType> getProductType(ProductType paramProductType) {
         return null;
     }
+
+    @Override
+    public Product selectByName(String title) {
+        return (Product)super.selectOne("com.zb.zber.data.model.Product.selectByName", title);
+    }
 }

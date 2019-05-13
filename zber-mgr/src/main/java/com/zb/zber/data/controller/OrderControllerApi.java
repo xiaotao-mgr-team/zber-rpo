@@ -148,21 +148,26 @@ public class OrderControllerApi {
             String[] splits = address.split("\n");
             for (int i = 0; i < splits.length; i++) {
                 Customer customer = new Customer();
-                if(StringUtils.isBlank(splits[i])){
+                String addressDetail = splits[i];
+
+                String remarks = "";
+                if(StringUtils.isBlank(addressDetail)){
                     continue;
                 }
-                Map<String,String> tipsMaps = CommonUtils.getProductMaps(splits[i]); //获取用户的数据
+                addressDetail = addressDetail.replace("，",",");
+                Map<String,String> tipsMaps = CommonUtils.getProductMaps(addressDetail); //获取用户的数据
                 if (tipsMaps.size() == 0) {
                     continue;
                 }
 
-
-
                 String[] addds = tipsMaps.get("0").split(",");
                 String[] products = tipsMaps.get("1").split(",");
-                String remarks = CommonUtils.getRemarks(products[1]);
-                String productName = products[1].substring(0,products[1].length()-remarks.length());
 
+                if(products.length>1){
+                    remarks = CommonUtils.getRemarks(products[1]);
+                }
+
+                String productName = products[1].substring(0,products[1].length()-(StringUtils.isBlank(remarks)?0:remarks.length()));
                 String productId = productService.selectByName(productName);
                 if(productId == null){
                     continue;
@@ -186,7 +191,7 @@ public class OrderControllerApi {
                 customer.setIsUseModule(Boolean.valueOf(false));
                 customer.setDestion(addds[0].substring(0,10));
                 //产品
-                customer.setExpense(Integer.valueOf(10));
+                customer.setExpense(0);
                 customer.setNumber(Integer.parseInt(products[0].substring(0,1)));
                 customer.setProduct(productId);
                 customer.setExpressType("0");

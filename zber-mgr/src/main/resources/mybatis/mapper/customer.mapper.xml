@@ -57,6 +57,19 @@
     values (<include refid="values" />)
   </insert>
 
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into tb_customer (<include refid="fields" />) values
+    <foreach collection="list" item="customer" separator=",">
+      (#{customer.id,jdbcType=CHAR}, #{customer.createUserId,jdbcType=CHAR}, #{customer.createTime,jdbcType=TIMESTAMP},
+      #{customer.modifyUserId,jdbcType=CHAR}, #{customer.modifyTime,jdbcType=TIMESTAMP}, #{customer.delf,jdbcType=INTEGER}, #{customer.remark,jdbcType=VARCHAR},
+      #{customer.address,jdbcType=VARCHAR}, #{customer.tel,jdbcType=CHAR}, #{customer.name,jdbcType=VARCHAR}, #{customer.product,jdbcType=VARCHAR}, #{customer.destion,jdbcType=VARCHAR},
+      #{customer.unitPrice,jdbcType=INTEGER}, #{customer.sellPrice,jdbcType=INTEGER}, #{customer.isPay,jdbcType=BIT}, #{customer.number,jdbcType=INTEGER}, #{customer.isUseModule,jdbcType=BIT},
+      #{customer.expense,jdbcType=INTEGER}, #{customer.isGetTicket,jdbcType=BIT}, #{customer.tickType,jdbcType=CHAR}, #{customer.tickMoney,jdbcType=DOUBLE},
+      #{customer.orderDate,jdbcType=TIMESTAMP}, #{customer.remarks,jdbcType=VARCHAR}, #{customer.expressType,jdbcType=VARCHAR}, #{customer.sumMoney,jdbcType=DOUBLE},
+      #{customer.tickExpense,jdbcType=DOUBLE}, #{customer.extendMoney,jdbcType=DOUBLE})
+    </foreach>
+  </insert>
+
   <update id="deleteById" parameterType="java.lang.String">
     update tb_customer
     set delete_flag = 1

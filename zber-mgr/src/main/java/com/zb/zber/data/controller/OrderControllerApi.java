@@ -138,13 +138,14 @@ public class OrderControllerApi {
      */
     @RequestMapping(value = {"/batchadd"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
-    public ResponseMessage batchProduct(String address, String dataStr, HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    public ResponseMessage batchProduct(String address, String dataStr, HttpServletRequest request, HttpServletResponse response) {
         try {
             // 一个用户订购多个产品
-
             // address [address,phone][number,productName,remarks][发票类型,金额]
             response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.checkNotAllNull(new Object[]{address});
+
+            List<Customer> customers = Lists.newArrayList();
             String[] splits = address.split("\n");
             for (int i = 0; i < splits.length; i++) {
                 Customer customer = new Customer();
@@ -154,13 +155,15 @@ public class OrderControllerApi {
                 if(StringUtils.isBlank(addressDetail)){
                     continue;
                 }
+
                 addressDetail = addressDetail.replace("，",",");
                 Map<String,String> tipsMaps = CommonUtils.getProductMaps(addressDetail); //获取用户的数据
                 if (tipsMaps.size() == 0) {
                     continue;
                 }
 
-                String[] addds = tipsMaps.get("0").split(",");
+                String addds = tipsMaps.get("0");
+                String tel = CommonUtils.getRemarks(addds);
                 String[] products = tipsMaps.get("1").split(",");
 
                 if(products.length>1){
@@ -170,6 +173,7 @@ public class OrderControllerApi {
                 String productName = products[1].substring(0,products[1].length()-(StringUtils.isBlank(remarks)?0:remarks.length()));
                 String productId = productService.selectByName(productName);
                 if(productId == null){
+                    logger.info("产品没有匹配成功!");
                     continue;
                 }
 
@@ -186,10 +190,10 @@ public class OrderControllerApi {
                     customer.setTickMoney(tickMoney);
                 }
 
-                customer.setAddress(addds[0]);
-                customer.setTel(StringUtils.isBlank(addds[1])?"00":addds[1]);
+                customer.setAddress(addds);
+                customer.setTel(StringUtils.isBlank(tel)?"-":tel);
                 customer.setIsUseModule(Boolean.valueOf(false));
-                customer.setDestion(addds[0].substring(0,10));
+                customer.setDestion(addds.substring(0,10));
                 //产品
                 customer.setExpense(0);
                 customer.setNumber(Integer.parseInt(products[0].substring(0,1)));
@@ -201,8 +205,12 @@ public class OrderControllerApi {
                 customer.setRemarks(remarks);
                 customer.setOrderDateStr(dataStr);
 
-                this.customerService.addCustomer(CustomerFormat(customer));
+                customers.add(CustomerFormat(customer));
+                this.customerService.addCustomer(customer);
             }
+
+//            this.customerService.batchAdd(customers); //批量添加
+
             return ResponseMessage.success();
         } catch (BusinessException e) {
             return ResponseMessage.error((String) e.getValue(), MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));

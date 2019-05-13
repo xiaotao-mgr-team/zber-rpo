@@ -9,6 +9,7 @@ import com.zb.zber.data.model.Customer;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,5 +45,13 @@ public class CustomerDao extends SuperDao implements ICustomerDao {
     @Override
     public Customer selectById(String id) {
         return (Customer)super.selectOne("com.zb.zber.data.model.Customer.selectById", id);
+    }
+
+    @Override
+    public int batchAdd(List<Customer> customers) {
+        for(Customer customer:customers){
+            customer.preInsert();
+        }
+        return super.insert("com.zb.zber.data.model.Customer.batchInsert", customers);
     }
 }

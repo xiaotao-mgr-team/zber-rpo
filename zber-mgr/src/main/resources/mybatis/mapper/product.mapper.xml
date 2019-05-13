@@ -46,7 +46,7 @@
     select
     <include refid="fields" />
     from tb_product
-    where title like CONCAT('%',#{title},'%') and delete_flag = 0 limit 1
+    where introduce like CONCAT('%',#{title},'%') and delete_flag = 0 limit 1
   </select>
 
   <delete id="deleteById" parameterType="java.lang.String">

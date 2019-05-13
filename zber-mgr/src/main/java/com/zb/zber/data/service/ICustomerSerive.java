@@ -5,6 +5,7 @@ import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
 import com.zb.zber.data.model.Customer;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by cuixt on 2018/10/10.
@@ -20,4 +21,6 @@ public interface ICustomerSerive {
     int deleteById(String paramString);
 
     Customer selectById(String paramString);
+
+    int batchAdd(List<Customer> customers);
 }

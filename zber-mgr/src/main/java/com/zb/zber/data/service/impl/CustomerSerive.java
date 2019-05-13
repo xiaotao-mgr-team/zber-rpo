@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by cuixt on 2018/8/7.
@@ -112,5 +113,10 @@ public class CustomerSerive implements ICustomerSerive {
         Customer cus = customerMapper.selectById(id);
         cus.format();
         return cus;
+    }
+
+    @Override
+    public int batchAdd(List<Customer> customers) {
+        return customerMapper.batchAdd(customers);
     }
 }

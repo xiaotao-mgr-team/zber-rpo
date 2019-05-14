@@ -31,15 +31,15 @@
     <result column="express_type" jdbcType="VARCHAR" property="expressType" />
     <result column="sum_money" jdbcType="DOUBLE" property="sumMoney" />
     <result column="extend_money" jdbcType="DOUBLE" property="extendMoney" />
-
     <result column="productName" jdbcType="VARCHAR" property="productName" />
+    <result column="ix" jdbcType="INTEGER" property="ix" />
 
   </resultMap>
 
   <sql id="fields">
     id, create_user_id, create_time, modify_user_id, modify_time, delete_flag, remark,
     address, tel, name, product, destion, unit_price, sell_price, is_pay, number, is_use_module,
-    expense, is_get_ticket, tick_type, tick_money,order_time,remarks,express_type,sum_money,tick_expense,extend_money
+    expense, is_get_ticket, tick_type, tick_money,order_time,remarks,express_type,sum_money,tick_expense,extend_money,ix
   </sql>
 
   <sql id="values">
@@ -49,7 +49,7 @@
     #{unitPrice,jdbcType=INTEGER}, #{sellPrice,jdbcType=INTEGER}, #{isPay,jdbcType=BIT}, #{number,jdbcType=INTEGER}, #{isUseModule,jdbcType=BIT},
     #{expense,jdbcType=INTEGER}, #{isGetTicket,jdbcType=BIT}, #{tickType,jdbcType=CHAR}, #{tickMoney,jdbcType=DOUBLE},
     #{orderDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, #{expressType,jdbcType=VARCHAR}, #{sumMoney,jdbcType=DOUBLE},
-    #{tickExpense,jdbcType=DOUBLE}, #{extendMoney,jdbcType=DOUBLE}
+    #{tickExpense,jdbcType=DOUBLE}, #{extendMoney,jdbcType=DOUBLE}, #{ix,jdbcType=INTEGER}
   </sql>
 
   <insert id="insert" parameterType="com.zb.zber.data.model.Customer">
@@ -66,7 +66,7 @@
       #{customer.unitPrice,jdbcType=INTEGER}, #{customer.sellPrice,jdbcType=INTEGER}, #{customer.isPay,jdbcType=BIT}, #{customer.number,jdbcType=INTEGER}, #{customer.isUseModule,jdbcType=BIT},
       #{customer.expense,jdbcType=INTEGER}, #{customer.isGetTicket,jdbcType=BIT}, #{customer.tickType,jdbcType=CHAR}, #{customer.tickMoney,jdbcType=DOUBLE},
       #{customer.orderDate,jdbcType=TIMESTAMP}, #{customer.remarks,jdbcType=VARCHAR}, #{customer.expressType,jdbcType=VARCHAR}, #{customer.sumMoney,jdbcType=DOUBLE},
-      #{customer.tickExpense,jdbcType=DOUBLE}, #{customer.extendMoney,jdbcType=DOUBLE})
+      #{customer.tickExpense,jdbcType=DOUBLE}, #{customer.extendMoney,jdbcType=DOUBLE}, #{customer.ix,jdbcType=INTEGER})
     </foreach>
   </insert>
 
@@ -95,7 +95,7 @@
         and a.order_time &lt;= #{endDate,jdbcType=TIMESTAMP}
       </if>
     </where>
-    order by a.create_time desc
+    order by a.ix asc, a.create_time desc
   </select>
 
   <update id="updateById" parameterType="com.zb.zber.data.model.Customer">

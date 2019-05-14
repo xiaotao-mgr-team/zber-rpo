@@ -40,6 +40,8 @@ public class Customer extends EntityObject {
     private String tickExpenseStr;
     private Double extendMoney;
 
+    private int ix;//用来排序的
+
 
     //==额外展示属性
     private String expressName;
@@ -365,5 +367,13 @@ public class Customer extends EntityObject {
 
     public void setExtendMoney(Double extendMoney) {
         this.extendMoney = extendMoney;
+    }
+
+    public int getIx() {
+        return ix;
+    }
+
+    public void setIx(int ix) {
+        this.ix = ix;
     }
 }

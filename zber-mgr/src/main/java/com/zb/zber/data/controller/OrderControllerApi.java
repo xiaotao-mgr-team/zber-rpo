@@ -144,7 +144,7 @@ public class OrderControllerApi {
             // address [address,phone][number,productName,remarks][发票类型,金额]
             response.addHeader("Access-Control-Allow-Origin", "*");
             ParamCheckUtils.checkNotAllNull(new Object[]{address});
-
+            int ix = 0;
             List<Customer> customers = Lists.newArrayList();
             String[] splits = address.split("\n");
             for (int i = 0; i < splits.length; i++) {
@@ -204,12 +204,12 @@ public class OrderControllerApi {
                 customer.setTickMoney(tickMoney);
                 customer.setRemarks(remarks);
                 customer.setOrderDateStr(dataStr);
-
+                customer.setIx(ix++);
                 customers.add(CustomerFormat(customer));
-                this.customerService.addCustomer(customer);
+//                this.customerService.addCustomer(customer);
             }
 
-//            this.customerService.batchAdd(customers); //批量添加
+            this.customerService.batchAdd(customers); //批量添加
 
             return ResponseMessage.success();
         } catch (BusinessException e) {

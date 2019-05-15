@@ -199,7 +199,6 @@ public class OrderControllerApi {
                 customer.setNumber(Integer.parseInt(products[0].substring(0,1)));
                 customer.setProduct(productId);
                 customer.setExpressType("0");
-                customer.setIsGetTicket(false);
                 customer.setTickType(CommonUtils.getTicket(tickType));
                 customer.setTickMoney(tickMoney);
                 customer.setRemarks(remarks);
@@ -290,7 +289,7 @@ public class OrderControllerApi {
 
             return ResponseMessage.success(customer);
         } catch (BusinessException e) {
-            logger.warn("api.customer.detail error!", e);
+            logger.warn("api.customer.detail errorss!", e);
             return ResponseMessage.error((String) e.getValue(),
                     MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }

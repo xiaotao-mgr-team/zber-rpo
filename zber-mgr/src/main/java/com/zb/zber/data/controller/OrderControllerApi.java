@@ -180,12 +180,12 @@ public class OrderControllerApi {
                 String tickType = "";
                 Double tickMoney = 0.0D;
 
-                customer.setIsGetTicket(false);
+                customer.setIsGetTicket(true);
                 if(StringUtils.isNotBlank(tipsMaps.get("2"))){
                     String[] tickets = tipsMaps.get("2").split(",");
                     tickType = tickets[0];
                     tickMoney = Double.valueOf(tickets[1]);
-                    customer.setIsGetTicket(true);
+                    customer.setIsGetTicket(false);
                     customer.setTickType(CommonUtils.getTicket(tickType));
                     customer.setTickMoney(tickMoney);
                 }

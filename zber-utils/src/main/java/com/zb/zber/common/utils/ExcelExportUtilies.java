@@ -191,10 +191,10 @@ public class ExcelExportUtilies
             headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
             // headerStyle.setFont(font);
             if (startDate != null) {
-                title += DatetimeUtilies.formatDateTime(DatetimeUtilies.DATE_TIME, startDate);
+                title += DatetimeUtilies.formatDateTime(DatetimeUtilies.DATE, startDate);
             }
             if (endDate != null) {
-                title += "至" + DatetimeUtilies.formatDateTime(DatetimeUtilies.DATE_TIME, endDate);
+                title += "至" + DatetimeUtilies.formatDateTime(DatetimeUtilies.DATE, endDate);
             }
             createTitle(wb, sheet, headerCellList, title, 0);
             // 创建生成时间

@@ -176,6 +176,9 @@
       <if test="extendMoney != null">
         extend_money = #{extendMoney,jdbcType=VARCHAR},
       </if>
+      <if test="ix != null">
+        ix =  #{ix,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=CHAR} and delete_flag = 0
   </update>

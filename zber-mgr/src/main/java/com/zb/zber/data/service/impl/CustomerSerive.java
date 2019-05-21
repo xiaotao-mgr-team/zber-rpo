@@ -9,6 +9,7 @@ import com.zb.zber.data.dao.IStockDao;
 import com.zb.zber.data.dao.IStockRecordDao;
 import com.zb.zber.data.model.Customer;
 import com.zb.zber.data.service.ICustomerSerive;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,17 @@ public class CustomerSerive implements ICustomerSerive {
             }
         }
         return page;
+    }
+
+    @Override
+    public List<Customer> listExprotCustomer(Date fromDt, Date endDt) {
+        List<Customer> lists = customerMapper.listExprotCustomer(fromDt, endDt);
+        if (CollectionUtils.isNotEmpty(lists)) {
+            for (Customer customer : lists) {
+                customer.format();
+            }
+        }
+        return lists;
     }
 
     public int updateById(Customer customer) {

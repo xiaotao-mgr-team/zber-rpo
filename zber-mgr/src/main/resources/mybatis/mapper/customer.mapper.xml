@@ -98,6 +98,21 @@
     order by a.ix asc, a.create_time desc
   </select>
 
+  <select id="listExprotCustomer" parameterType="map" resultMap="BaseResultMap">
+    select a.*,b.title as productName
+    from tb_customer a LEFT JOIN  tb_product b on a.product = b.id
+    <where>
+      a.delete_flag = 0
+      <if test="startDate != null">
+        and a.order_time &gt;= #{startDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endDate != null">
+        and a.order_time &lt;= #{endDate,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+    order by a.order_time desc,a.ix asc
+  </select>
+
   <update id="updateById" parameterType="com.zb.zber.data.model.Customer">
     update tb_customer
     <set>

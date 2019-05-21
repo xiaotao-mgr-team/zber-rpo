@@ -14,6 +14,8 @@ public interface ICustomerSerive {
 
     PaginationOrdersList<Customer> listCustomer(PaginationOrdersList<Customer> paramPaginationOrdersList, Date startTime, Date endTime) throws BusinessException;
 
+    List<Customer> listExprotCustomer(Date fromDt, Date endDt);
+
     int updateById(Customer paramCustomer);
 
     int addCustomer(Customer paramCustomer) throws BusinessException;

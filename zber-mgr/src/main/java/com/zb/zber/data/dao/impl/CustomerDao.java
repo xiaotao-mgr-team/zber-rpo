@@ -26,6 +26,15 @@ public class CustomerDao extends SuperDao implements ICustomerDao {
     }
 
     @Override
+    public List<Customer> listExprotCustomer(Date fromDt, Date endDt) {
+        Map<String, Object> maps = Maps.newHashMap();
+        maps.put("startDate", fromDt);
+        maps.put("endDate", endDt);
+        return super.selectList("com.zb.zber.data.model.Customer.listExprotCustomer", maps);
+    }
+
+
+    @Override
     public int updateById(Customer customer) {
         customer.preUpdate();
         return super.update("com.zb.zber.data.model.Customer.updateById", customer);

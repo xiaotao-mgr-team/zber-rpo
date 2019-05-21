@@ -14,6 +14,8 @@ import java.util.List;
 public interface ICustomerDao {
     PaginationOrdersList<Customer> listCustomer(PaginationOrdersList<Customer> paramPaginationOrdersList, Date paramDate1, Date paramDate2);
 
+    List<Customer> listExprotCustomer(Date fromDt, Date endDt);
+
     int updateById(Customer paramCustomer);
 
     int addCustomer(Customer paramCustomer) throws BusinessException;

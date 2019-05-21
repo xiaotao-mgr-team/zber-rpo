@@ -148,6 +148,7 @@ public class OrderControllerApi {
             List<Customer> customers = Lists.newArrayList();
             String[] splits = address.split("\n");
             for (int i = 0; i < splits.length; i++) {
+
                 Customer customer = new Customer();
                 String addressDetail = splits[i];
 
@@ -155,6 +156,7 @@ public class OrderControllerApi {
                 if(StringUtils.isBlank(addressDetail)){
                     continue;
                 }
+                logger.info(addressDetail);
 
                 addressDetail = addressDetail.replace("，",",");
                 Map<String,String> tipsMaps = CommonUtils.getProductMaps(addressDetail); //获取用户的数据
@@ -328,10 +330,8 @@ public class OrderControllerApi {
             if (StringUtils.isNotEmpty(startDate)) {
                 endDt = DatetimeUtilies.parse("yyyy-MM-dd", endDate);
             }
-            PaginationOrdersList<Customer> page = new PaginationOrdersList();
-            page.getPagination().setCurrentPage(1);
-            page.getPagination().setPageSize(1000);
-            page = this.customerService.listCustomer(page, startDt, endDt);
+
+            List<Customer> customers = this.customerService.listExprotCustomer(startDt, endDt);
 
             List<ExcelExportUtilies.ExcelHeaderCell> headerCellList = new ArrayList();
             ExcelExportUtilies.ExcelHeaderCell excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("序号", ExcelExportUtilies.ExcelDirection.CENTER, null, true, ExcelExportUtilies.ExcelDirection.CENTER);
@@ -342,27 +342,31 @@ public class OrderControllerApi {
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购产品", ExcelExportUtilies.ExcelDirection.CENTER, "name", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("单价", ExcelExportUtilies.ExcelDirection.CENTER, "unitPrice", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("购买数量", ExcelExportUtilies.ExcelDirection.CENTER, "number", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("运费", ExcelExportUtilies.ExcelDirection.CENTER, "expense", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
+
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("是否开具发票", ExcelExportUtilies.ExcelDirection.CENTER, "isGetTicketStr", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票类型", ExcelExportUtilies.ExcelDirection.CENTER, "tickType", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票费用", ExcelExportUtilies.ExcelDirection.CENTER, "tickExpense", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
+
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("单价", ExcelExportUtilies.ExcelDirection.CENTER, "unitPrice", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            headerCellList.add(excelHeaderCell);
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("购买数量", ExcelExportUtilies.ExcelDirection.CENTER, "number", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            headerCellList.add(excelHeaderCell);
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("运费", ExcelExportUtilies.ExcelDirection.CENTER, "expense", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            headerCellList.add(excelHeaderCell);
+
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("信息备注", ExcelExportUtilies.ExcelDirection.CENTER, "remarks", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            headerCellList.add(excelHeaderCell);
+            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("额外费用", ExcelExportUtilies.ExcelDirection.CENTER, "extendMoney", false, ExcelExportUtilies.ExcelDirection.CENTER);
+            headerCellList.add(excelHeaderCell);
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("总费用", ExcelExportUtilies.ExcelDirection.CENTER, "sumMoney", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
+
             excelHeaderCell.setFormatDate("yyyy-MM-dd");
-            List<Customer> lists = page.getDatas();
-            if (!CollectionUtils.isEmpty(lists)) {
-//                for (Customer c : lists) {
-//                    c.setAddress(c.getDestion());
-//                }
-                ExcelExportUtilies.export(startDt, endDt, "订单结算表", os, lists, headerCellList);
+            if (!CollectionUtils.isEmpty(customers)) {
+                ExcelExportUtilies.export(startDt, endDt, "订单结算表", os, customers, headerCellList);
             }
             return ResponseMessage.success();
         } catch (BusinessException e) {

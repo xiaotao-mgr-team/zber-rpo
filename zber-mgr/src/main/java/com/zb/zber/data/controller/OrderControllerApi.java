@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.whalin.MemCached.MemCachedClient;
 import com.zb.zber.common.core.exception.BusinessException;
 import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
-import com.zb.zber.common.utils.DatetimeUtilies;
-import com.zb.zber.common.utils.ExcelExportUtilies;
-import com.zb.zber.common.utils.FileUtilies;
-import com.zb.zber.common.utils.ParamCheckUtils;
+import com.zb.zber.common.utils.*;
 import com.zb.zber.common.web.comp.ace.ResponseMessage;
 import com.zb.zber.common.web.comp.ace.i18n.MessageResolver;
 import com.zb.zber.data.common.CommonUtils;
@@ -54,6 +51,14 @@ public class OrderControllerApi {
         if (customer == null) {
             return null;
         }
+
+        // todo 获取地址
+        LocalUtil lu = LocalUtil.getInstance();
+        List<String> list = lu.getCities("中国", "江苏");
+
+        System.out.print(lu.getCountry());
+
+
         try {
             if (StringUtils.isEmpty(customer.getOrderDateStr())) {
                 customer.setOrderDate(new Date());
@@ -124,6 +129,16 @@ public class OrderControllerApi {
             return ResponseMessage.error((String) e.getValue(),
                     MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
+    }
+
+    @RequestMapping(value = {"/test"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
+    @ResponseBody
+    public ResponseMessage getTest(Customer customer, HttpServletRequest request, HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+
+        String addrss = "江苏省苏州工业园区琼姬路66号59-201 15960321456";
+        LocalUtil.getProvinces("中国");
+        return ResponseMessage.success();
     }
 
     /**

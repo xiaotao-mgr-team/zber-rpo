@@ -1,10 +1,12 @@
 package com.zb.zber.data.controller;
 
 import com.google.common.collect.Lists;
-import com.whalin.MemCached.MemCachedClient;
 import com.zb.zber.common.core.exception.BusinessException;
 import com.zb.zber.common.core.persistence.db.pagination.PaginationOrdersList;
-import com.zb.zber.common.utils.*;
+import com.zb.zber.common.utils.DatetimeUtilies;
+import com.zb.zber.common.utils.ExcelExportUtilies;
+import com.zb.zber.common.utils.FileUtilies;
+import com.zb.zber.common.utils.ParamCheckUtils;
 import com.zb.zber.common.web.comp.ace.ResponseMessage;
 import com.zb.zber.common.web.comp.ace.i18n.MessageResolver;
 import com.zb.zber.data.common.CommonUtils;
@@ -12,6 +14,8 @@ import com.zb.zber.data.model.Customer;
 import com.zb.zber.data.model.IsPay;
 import com.zb.zber.data.model.Product;
 import com.zb.zber.data.service.ICustomerSerive;
+import com.zb.zber.data.service.ILocalHandler;
+import com.zb.zber.data.service.IMobileHandler;
 import com.zb.zber.data.service.IProductService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -45,19 +49,15 @@ public class OrderControllerApi {
     private IProductService productService;
 
     @Autowired
-    private MemCachedClient memCachedClient;
+    private ILocalHandler iLocalHandler;
+
+    @Autowired
+    private IMobileHandler iMobileHandler;
 
     public Customer CustomerFormat(Customer customer) {
         if (customer == null) {
             return null;
         }
-
-        // todo 获取地址
-        LocalUtil lu = LocalUtil.getInstance();
-        List<String> list = lu.getCities("中国", "江苏");
-
-        System.out.print(lu.getCountry());
-
 
         try {
             if (StringUtils.isEmpty(customer.getOrderDateStr())) {
@@ -68,6 +68,7 @@ public class OrderControllerApi {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         if ((customer.getIsGetTicket() == null) || (customer.getIsGetTicket().booleanValue())) {
             customer.setIsGetTicket(Boolean.valueOf(true));
             customer.setTickType("");
@@ -86,6 +87,7 @@ public class OrderControllerApi {
                 customer.setTickExpense(Double.valueOf(customer.getTickMoney().intValue() * 0.09D));
             }
         }
+
         Product product = productService.selectById(customer.getProduct());
         customer.setUnitPrice(product.getPrice());
         customer.setName(product.getTitle());
@@ -96,6 +98,7 @@ public class OrderControllerApi {
         if (customer.getIsUseModule() != null && !customer.getIsUseModule().booleanValue()) {
             // todo 是否使用运费模板
         }
+
         Double extendMoney = customer.getExtendMoney() == null?0:customer.getExtendMoney();
         Double totolMoney = customer.getTickExpense().doubleValue(); //初始化成发票的价格
         totolMoney = totolMoney + customer.getExpense().intValue() + extendMoney;  //加运费的价格
@@ -107,7 +110,10 @@ public class OrderControllerApi {
         }
 
         if(StringUtils.isNotBlank(customer.getAddress())){
-            customer.setDestion(customer.getAddress().substring(0,20));
+
+
+            customer.setDestion(iLocalHandler.getProAndCity(customer.getAddress()));
+            customer.setTel(iMobileHandler.checkCellphone(customer.getAddress()));
         }
 
         customer.setSumMoney(totolMoney);
@@ -129,16 +135,6 @@ public class OrderControllerApi {
             return ResponseMessage.error((String) e.getValue(),
                     MessageResolver.getMessage(request, (String) e.getValue(), e.getPlaceholders()));
         }
-    }
-
-    @RequestMapping(value = {"/test"}, produces = {"application/json"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
-    @ResponseBody
-    public ResponseMessage getTest(Customer customer, HttpServletRequest request, HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
-
-        String addrss = "江苏省苏州工业园区琼姬路66号59-201 15960321456";
-        LocalUtil.getProvinces("中国");
-        return ResponseMessage.success();
     }
 
     /**

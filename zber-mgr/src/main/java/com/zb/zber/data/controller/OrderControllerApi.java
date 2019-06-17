@@ -110,8 +110,6 @@ public class OrderControllerApi {
         }
 
         if(StringUtils.isNotBlank(customer.getAddress())){
-
-
             customer.setDestion(iLocalHandler.getProAndCity(customer.getAddress()));
             customer.setTel(iMobileHandler.checkCellphone(customer.getAddress()));
         }
@@ -209,7 +207,7 @@ public class OrderControllerApi {
                 customer.setDestion(addds.substring(0,10));
                 //产品
                 customer.setExpense(0);
-                customer.setNumber(Integer.parseInt(products[0].substring(0,1)));
+                customer.setNumber(Integer.parseInt(products[0].substring(0,products[0].length()-1)));
                 customer.setProduct(productId);
                 customer.setExpressType("0");
                 customer.setTickType(CommonUtils.getTicket(tickType));

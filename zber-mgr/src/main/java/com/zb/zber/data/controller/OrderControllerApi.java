@@ -284,7 +284,6 @@ public class OrderControllerApi {
         isPay.setId("1");
         isPay.setName("到付");
 
-
         isPaylist.add(isPay);
         return ResponseMessage.success(isPaylist);
     }
@@ -352,12 +351,12 @@ public class OrderControllerApi {
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("订购产品", ExcelExportUtilies.ExcelDirection.CENTER, "name", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);
 
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("是否开具发票", ExcelExportUtilies.ExcelDirection.CENTER, "isGetTicketStr", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票类型", ExcelExportUtilies.ExcelDirection.CENTER, "tickType", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
-            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票费用", ExcelExportUtilies.ExcelDirection.CENTER, "tickExpense", false, ExcelExportUtilies.ExcelDirection.CENTER);
-            headerCellList.add(excelHeaderCell);
+//            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("是否开具发票", ExcelExportUtilies.ExcelDirection.CENTER, "isGetTicketStr", false, ExcelExportUtilies.ExcelDirection.CENTER);
+//            headerCellList.add(excelHeaderCell);
+//            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票类型", ExcelExportUtilies.ExcelDirection.CENTER, "tickType", false, ExcelExportUtilies.ExcelDirection.CENTER);
+//            headerCellList.add(excelHeaderCell);
+//            excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("发票费用", ExcelExportUtilies.ExcelDirection.CENTER, "tickExpense", false, ExcelExportUtilies.ExcelDirection.CENTER);
+//            headerCellList.add(excelHeaderCell);
 
             excelHeaderCell = new ExcelExportUtilies.ExcelHeaderCell("单价", ExcelExportUtilies.ExcelDirection.CENTER, "unitPrice", false, ExcelExportUtilies.ExcelDirection.CENTER);
             headerCellList.add(excelHeaderCell);

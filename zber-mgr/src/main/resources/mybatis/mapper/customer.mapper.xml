@@ -95,7 +95,7 @@
         and a.order_time &lt;= #{endDate,jdbcType=TIMESTAMP}
       </if>
     </where>
-    order by a.ix asc, a.create_time desc
+    order by a.order_time desc, a.ix asc
   </select>
 
   <select id="listExprotCustomer" parameterType="map" resultMap="BaseResultMap">

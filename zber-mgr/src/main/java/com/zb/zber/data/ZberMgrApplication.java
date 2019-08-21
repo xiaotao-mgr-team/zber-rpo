@@ -9,8 +9,6 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 @MapperScan("com.zb.zber.data.mapper")
 public class ZberMgrApplication {
     public static void main(String[] args) {
-//        SpringApplication springApplication = new SpringApplication(YwythApplication.class);
-//        springApplication.addListeners(new ApplicationStartup());
         SpringApplication.run(ZberMgrApplication.class, args);
     }
 }

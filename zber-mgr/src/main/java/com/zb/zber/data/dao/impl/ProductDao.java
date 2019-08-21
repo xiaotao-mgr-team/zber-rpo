@@ -17,12 +17,12 @@ import java.util.List;
 public class ProductDao extends SuperDao implements IProductDao {
     @Override
     public PaginationOrdersList<Product> listProduct(PaginationOrdersList<Product> page, Product product) {
-        return super.selectPage("com.zb.zber.data.model.Product.listProduct", product, page);
+        return super.selectPage("com.zb.zber.data.model.Product.listAllProductForWeb", product, page);
     }
 
     @Override
     public PaginationOrdersList<Product> listAllProduct(PaginationOrdersList<Product> page, Product product) {
-        return super.selectPage("com.zb.zber.data.model.Product.listAllProduct", product, page);
+        return super.selectPage("com.zb.zber.data.model.Product.listProduct", product, page);
     }
 
     @Override

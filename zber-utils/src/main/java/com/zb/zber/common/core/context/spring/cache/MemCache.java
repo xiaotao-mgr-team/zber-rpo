@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
  * @author wub
  *
  */
-public class MemCache implements Cache{  
+public abstract class MemCache implements Cache{
 
 		private com.google.code.ssm.Cache cache;
 		

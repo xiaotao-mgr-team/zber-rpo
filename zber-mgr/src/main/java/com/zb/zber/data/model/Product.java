@@ -55,6 +55,12 @@ public class Product extends EntityObject {
                     prox = FileDomainEnum.ZBER_J_PRODUCT.getCode();break;
                 case "9":
                     prox = FileDomainEnum.ZBER_SJJ_PRODUCT.getCode();break;
+                case "10":
+                    prox = FileDomainEnum.ZBER_LDG_PRODUCT.getCode();break;
+                case "11":
+                    prox = FileDomainEnum.ZBER_SJJ_PRODUCT.getCode();break;
+                case "15":
+                    prox = FileDomainEnum.ZBER_ZL_PRODUCT.getCode();break;
                     default:break;
             }
             if (!StringUtilies.isNullOrEmpty(this.img)) {

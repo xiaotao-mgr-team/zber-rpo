@@ -65,7 +65,7 @@
     <include refid="fields" />
     from tb_product
     <where>
-      delete_flag = 0 and is_dis_websize =1
+      delete_flag = 0
       <if test="typeId != null">
         and type_id = #{typeId,jdbcType=CHAR}
       </if>
@@ -82,6 +82,22 @@
     from tb_product
     <where>
       delete_flag = 0
+      <if test="typeId != null">
+        and type_id = #{typeId,jdbcType=CHAR}
+      </if>
+      <if test="title != null">
+        and title like CONCAT('%',#{title},'%')
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <select id="listAllProductForWeb" parameterType="com.zb.zber.data.model.Product" resultMap="BaseResultMap">
+    select
+    <include refid="fields" />
+    from tb_product
+    <where>
+      delete_flag = 0 and is_dis_websize = '1'
       <if test="typeId != null">
         and type_id = #{typeId,jdbcType=CHAR}
       </if>
